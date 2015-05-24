@@ -13,14 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class DWSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll, Disposable {
-    DWSettingsPanel settingsPanel;
-
+    private DWSettingsPanel settingsPanel;
     private final DWSettingsProvider mySettingsProvider;
-    private Project myProject;
 
     public DWSettingsConfigurable(Project project) {
         this.mySettingsProvider = DWSettingsProvider.getInstance(project);
-        this.myProject = project;
     }
 
     @Nls
