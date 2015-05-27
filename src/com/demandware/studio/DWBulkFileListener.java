@@ -4,6 +4,7 @@ import com.demandware.studio.projectWizard.DWModuleType;
 import com.demandware.studio.settings.DWSettingsProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
@@ -52,7 +53,6 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
         Project[] projects = ProjectManager.getInstance().getOpenProjects();
-        DWServerConnection serverConnection = null;
 
         for (VFileEvent event : events) {
             VirtualFile eventFile = event.getFile();
@@ -65,12 +65,11 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                         ModuleType CurrentModuleType = ModuleType.get(module);
 
                         if (CurrentModuleType instanceof DWModuleType) {
-                            if (serverConnection == null) {
-                                serverConnection = new DWServerConnection(DWSettingsProvider.getInstance(project));
-                            }
 
                             for (VirtualFile sourceRoot : ModuleRootManager.getInstance(module).getSourceRoots()) {
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
+                                    DWServerConnection serverConnection = ServiceManager.getService(project, DWServerConnection.class);
+
                                     String[] parts = eventFile.getPath().substring(0, sourceRoot.getPath().length()).split(File.separator);
                                     String relPath = eventFile.getPath().substring(sourceRoot.getPath().length(), eventFile.getPath().length());
                                     String cartridgeName = parts[parts.length -1];

@@ -26,6 +26,7 @@
     <!-- Add your extensions here -->
     <moduleType id="DW_MODULE_TYPE" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
     <projectService id="DW_SETTINGS_PROVIDER" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
+    <projectService id="DW_SERVER_CONNECTION" serviceImplementation="com.demandware.studio.DWServerConnection"/>
     <projectConfigurable id="DW_SETTINGS_CONFIGURABLE" groupId="tools" instance="com.demandware.studio.settings.DWSettingsConfigurable"/>
   </extensions>
 
