@@ -4,7 +4,6 @@ import com.demandware.studio.settings.DWSettingsProvider;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -18,7 +17,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class DWServerConnection {
     private final String basePath;
@@ -79,7 +77,8 @@ public class DWServerConnection {
             try {
                 CloseableHttpResponse response = httpClient.execute(request, context);
                 try {
-                    Notifications.Bus.notify(new Notification("demandware", "Success", response.getStatusLine().toString(), NotificationType.INFORMATION));
+                    Notifications.Bus.notify(new Notification("demandware", "Success",
+                            response.getStatusLine().toString() + ": " + request.getURI() , NotificationType.INFORMATION));
                 } finally {
                     response.close();
                 }
