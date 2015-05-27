@@ -56,7 +56,7 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
         for (VFileEvent event : events) {
             VirtualFile eventFile = event.getFile();
 
-            if (eventFile != null) {
+            if (eventFile != null && !eventFile.isDirectory()) {
                 for (Project project : projects) {
                     Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(eventFile);
 
