@@ -19,9 +19,13 @@ import com.intellij.util.messages.MessageBusConnection;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
@@ -72,16 +76,18 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
 
                                     String[] parts = eventFile.getPath().substring(0, sourceRoot.getPath().length()).split(File.separator);
                                     String relPath = eventFile.getPath().substring(sourceRoot.getPath().length(), eventFile.getPath().length());
-                                    String cartridgeName = parts[parts.length -1];
+                                    String cartridgeName = parts[parts.length - 1];
                                     String serverPath = serverConnection.getBasePath() + "/" + cartridgeName + relPath;
 
-                                    HttpUriRequest request = RequestBuilder.create("GET")
+                                    HttpUriRequest request = RequestBuilder.create("PUT")
                                             .setUri(serverPath)
+                                            .setEntity(new FileEntity(new File(eventFile.getPath())))
                                             .build();
 
                                     ApplicationManager.getApplication().executeOnPooledThread(new DWServerConnection.RequestThread(
                                             serverConnection.getClient(), serverConnection.getCredientials(), request
                                     ));
+
                                 }
                             }
                         }
