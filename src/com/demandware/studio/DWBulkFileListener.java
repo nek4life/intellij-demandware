@@ -4,6 +4,7 @@ import com.demandware.studio.projectWizard.DWModuleType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.project.Project;
@@ -20,13 +21,14 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.FileEntity;
 import org.jetbrains.annotations.NotNull;
 
+
 import java.io.File;
 import java.util.List;
 
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
     private MessageBusConnection connection;
-
-
+    private static Logger LOG = Logger.getInstance(DWBulkFileListener.class);
+    
     public DWBulkFileListener() {
         connection = ApplicationManager.getApplication().getMessageBus().connect();
     }

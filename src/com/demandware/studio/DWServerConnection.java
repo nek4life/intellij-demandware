@@ -4,6 +4,7 @@ import com.demandware.studio.settings.DWSettingsProvider;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -16,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 
 public class DWServerConnection {
@@ -61,6 +63,7 @@ public class DWServerConnection {
         private final CloseableHttpClient httpClient;
         private final HttpClientContext context;
         private final HttpUriRequest request;
+        private final Logger LOG = Logger.getInstance(RequestThread.class);
 
         public RequestThread(CloseableHttpClient httpClient,
                              CredentialsProvider credentialsProvider,
@@ -77,15 +80,16 @@ public class DWServerConnection {
             try {
                 CloseableHttpResponse response = httpClient.execute(request, context);
                 try {
-                    Notifications.Bus.notify(new Notification("demandware", "Success",
-                            response.getStatusLine().toString() + ": " + request.getURI() , NotificationType.INFORMATION));
+                    Notifications.Bus.notify(new Notification("demandware", "[request] ", request.getURI().toString(), NotificationType.INFORMATION));
                 } finally {
                     response.close();
                 }
+            } catch (SSLException e) {
+                LOG.error("This plugin requires JDK8 or Upgrade your Java security policies to Unlimited Strength policies", e);
             } catch (ClientProtocolException e) {
-                e.printStackTrace();
+                LOG.error(e);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(e);
             }
         }
     }
