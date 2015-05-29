@@ -31,7 +31,6 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         myState.hostname = hostname;
     }
 
-
     public String getUsername() {
         return myState.username;
     }
@@ -51,7 +50,6 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         return StringUtil.notNullize(password);
     }
 
-
     public void setPassword(String password) {
         try {
             PasswordSafe.getInstance().storePassword(null, DWSettingsPanel.class, "DW_SETTINGS_PASSWORD_KEY", password != null ? password : "");
@@ -68,6 +66,14 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         myState.version = version;
     }
 
+    public boolean getAutoUploadEnabled() {
+        return myState.autoUploadEnabled;
+    }
+
+    public void setAutoUploadEnabled(boolean autoUploadEnabled) {
+        myState.autoUploadEnabled = autoUploadEnabled;
+    }
+
     @Override
     public State getState() {
         return myState;
@@ -79,6 +85,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         myState.username = state.username;
         myState.password = state.password;
         myState.version = state.version;
+        myState.autoUploadEnabled = state.autoUploadEnabled;
     }
 
     public static class State {
@@ -86,5 +93,6 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         public String username;
         public String password;
         public String version;
+        public boolean autoUploadEnabled;
     }
 }

@@ -8,6 +8,8 @@ public class DWSettingsPanel {
     private JTextField versionField;
     private JPasswordField passwordField;
     private JPanel dwSettingsPanel;
+    private JCheckBox autoUploadEnabledField;
+    private JLabel enabledAutoUploadsLabel;
     private final DWSettingsProvider mySettingsProvider;
 
     public DWSettingsPanel(DWSettingsProvider provider, boolean resetPanel) {
@@ -34,6 +36,10 @@ public class DWSettingsPanel {
         return String.valueOf(passwordField.getPassword());
     }
 
+    public boolean getAutoUploadEnabled() {
+        return autoUploadEnabledField.isSelected();
+    }
+
     public void setHostname(String hostname) {
         hostnameField.setText(hostname);
     }
@@ -50,6 +56,10 @@ public class DWSettingsPanel {
         passwordField.setText(password);
     }
 
+    public void setAutoUploadEnabled(boolean checked) {
+        autoUploadEnabledField.setSelected(checked);
+    }
+
     public JPanel createPanel() {
         return dwSettingsPanel;
     }
@@ -59,6 +69,7 @@ public class DWSettingsPanel {
         mySettingsProvider.setUsername(getUsername());
         mySettingsProvider.setPassword(getPassword());
         mySettingsProvider.setVersion(getVersion());
+        mySettingsProvider.setAutoUploadEnabled(getAutoUploadEnabled());
     }
 
     public void reset() {
@@ -66,12 +77,18 @@ public class DWSettingsPanel {
         setUsername(mySettingsProvider.getUsername());
         setPassword(mySettingsProvider.getPassword());
         setVersion(mySettingsProvider.getVersion());
+        setAutoUploadEnabled(mySettingsProvider.getAutoUploadEnabled());
     }
 
     public boolean isModified() {
         return !getHostname().equals(mySettingsProvider.getHostname()) ||
                 !getUsername().equals(mySettingsProvider.getUsername()) ||
                 !getPassword().equals(mySettingsProvider.getPassword()) ||
-                !getVersion().equals(mySettingsProvider.getVersion());
+                !getVersion().equals(mySettingsProvider.getVersion()) ||
+                !getAutoUploadEnabled() == mySettingsProvider.getAutoUploadEnabled();
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

@@ -1,6 +1,7 @@
 package com.demandware.studio;
 
 import com.demandware.studio.projectWizard.DWModuleType;
+import com.demandware.studio.settings.DWSettingsProvider;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -28,7 +29,7 @@ import java.util.List;
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
     private MessageBusConnection connection;
     private static Logger LOG = Logger.getInstance(DWBulkFileListener.class);
-    
+
     public DWBulkFileListener() {
         connection = ApplicationManager.getApplication().getMessageBus().connect();
     }
@@ -60,6 +61,12 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
 
             if (eventFile != null && !eventFile.isDirectory()) {
                 for (Project project : projects) {
+
+                    // Bail out if auto uploads are not enabled.
+                    if (!DWSettingsProvider.getInstance(project).getAutoUploadEnabled()) {
+                        return;
+                    }
+
                     Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(eventFile);
 
                     if (module != null) {
