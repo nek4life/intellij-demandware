@@ -17,18 +17,17 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.util.messages.MessageBusConnection;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.entity.FileEntity;
 import org.jetbrains.annotations.NotNull;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
     private MessageBusConnection connection;
     private static Logger LOG = Logger.getInstance(DWBulkFileListener.class);
+    private final ArrayList<String> existingFilePaths = new ArrayList<String>();
 
     public DWBulkFileListener() {
         connection = ApplicationManager.getApplication().getMessageBus().connect();
@@ -49,7 +48,14 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
 
     @Override
     public void before(@NotNull List<? extends VFileEvent> events) {
-
+        for (VFileEvent event : events) {
+            VirtualFile eventFile = event.getFile();
+            if (eventFile != null) {
+                if (new File(eventFile.getPath()).exists()) {
+                    existingFilePaths.add(event.getPath());
+                }
+            }
+        }
     }
 
     @Override
@@ -78,20 +84,24 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ServiceManager.getService(project, DWServerConnection.class);
 
-                                    String[] parts = eventFile.getPath().substring(0, sourceRoot.getPath().length()).split(File.separator);
-                                    String relPath = eventFile.getPath().substring(sourceRoot.getPath().length(), eventFile.getPath().length());
-                                    String cartridgeName = parts[parts.length - 1];
-                                    String serverPath = serverConnection.getBasePath() + "/" + cartridgeName + relPath;
-
-                                    HttpUriRequest request = RequestBuilder.create("PUT")
-                                            .setUri(serverPath)
-                                            .setEntity(new FileEntity(new File(eventFile.getPath())))
-                                            .build();
-
-                                    ApplicationManager.getApplication().executeOnPooledThread(new DWServerConnection.RequestThread(
-                                            serverConnection.getClient(), serverConnection.getCredientials(), request
-                                    ));
-
+                                    if (existingFilePaths.contains(eventFile.getPath())) {
+                                        ApplicationManager.getApplication().executeOnPooledThread(new DWServerConnection.UpdateFileThread(
+                                                serverConnection.getClient(),
+                                                serverConnection.getCredientials(),
+                                                serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
+                                                eventFile.getPath()
+                                        ));
+                                    } else {
+                                        ApplicationManager.getApplication().executeOnPooledThread(
+                                                new DWServerConnection.NewFileThread(
+                                                        serverConnection.getClient(),
+                                                        serverConnection.getCredientials(),
+                                                        serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
+                                                        serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
+                                                        eventFile.getPath()
+                                                )
+                                        );
+                                    }
                                 }
                             }
                         }
@@ -100,4 +110,5 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
             }
         }
     }
+
 }

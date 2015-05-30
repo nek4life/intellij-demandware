@@ -11,17 +11,22 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import javax.net.ssl.SSLException;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DWServerConnection {
-    private final String basePath;
+    private final String baseServerPath;
     private final CloseableHttpClient client;
     private final CredentialsProvider credentialsProvider;
 
@@ -31,7 +36,7 @@ public class DWServerConnection {
         String username = settingsProvider.getUsername();
         String password = settingsProvider.getPassword();
         String version = settingsProvider.getVersion();
-        basePath = String.format("https://%s/on/demandware.servlet/webdav/Sites/Cartridges/%s", hostname, version);
+        baseServerPath = String.format("https://%s/on/demandware.servlet/webdav/Sites/Cartridges/%s", hostname, version);
 
         credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
@@ -47,8 +52,40 @@ public class DWServerConnection {
                 .build();
     }
 
-    public String getBasePath() {
-        return basePath;
+    public String getBaseServerPath() {
+        return baseServerPath;
+    }
+
+    public String getCartridgeName(String rootPath, String filePath) {
+        String[] parts = filePath.substring(0, rootPath.length()).split(File.separator);
+        return parts[parts.length - 1];
+    }
+
+    public String getRemoteFilePath(String rootPath, String filePath) {
+        String relPath = filePath.substring(rootPath.length(), filePath.length());
+        String cartridgeName = getCartridgeName(rootPath, filePath);
+        return baseServerPath + "/" + cartridgeName + relPath;
+    }
+
+    public ArrayList<String> getRemoteDirPaths(String rootPath, String filePath) {
+        ArrayList<String> serverPaths = new ArrayList<String>();
+        String relPath = filePath.substring(rootPath.length(), filePath.length());
+        String cartridgeName = getCartridgeName(rootPath, filePath);
+
+        if (relPath.startsWith(File.separator)) {
+            relPath = relPath.substring(1, relPath.length());
+        }
+
+        String[] relParts = relPath.split(File.separator);
+        String[] relDirs = Arrays.copyOfRange(relParts, 0, relParts.length - 1);
+
+        String dirPath = "";
+        for (String relDir : relDirs) {
+            dirPath = dirPath + "/" + relDir;
+            serverPaths.add(baseServerPath + "/" + cartridgeName + dirPath);
+        }
+
+        return serverPaths;
     }
 
     public CloseableHttpClient getClient() {
@@ -59,20 +96,24 @@ public class DWServerConnection {
         return credentialsProvider;
     }
 
-    public static class RequestThread extends Thread {
+    public static class UpdateFileThread extends Thread {
         private final CloseableHttpClient httpClient;
         private final HttpClientContext context;
         private final HttpUriRequest request;
-        private final Logger LOG = Logger.getInstance(RequestThread.class);
+        private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
 
-        public RequestThread(CloseableHttpClient httpClient,
-                             CredentialsProvider credentialsProvider,
-                             HttpUriRequest request) {
+        public UpdateFileThread(CloseableHttpClient httpClient,
+                                CredentialsProvider credentialsProvider,
+                                String remoteFilePath,
+                                String localFilePath) {
 
             this.httpClient = httpClient;
-            this.request = request;
             this.context = new HttpClientContext();
             this.context.setCredentialsProvider(credentialsProvider);
+            this.request = RequestBuilder.create("PUT")
+                    .setUri(remoteFilePath)
+                    .setEntity(new FileEntity(new File(localFilePath)))
+                    .build();
         }
 
         @Override
@@ -93,4 +134,63 @@ public class DWServerConnection {
             }
         }
     }
+
+    public static class NewFileThread extends Thread {
+        private final CloseableHttpClient httpClient;
+        private final HttpClientContext context;
+        private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
+        private final ArrayList<String> remoteDirpaths;
+        private final String remoteFilePath;
+        private final String localFilePath;
+
+        public NewFileThread(CloseableHttpClient httpClient,
+                             CredentialsProvider credentialsProvider,
+                             ArrayList<String> remoteDirPaths,
+                             String remoteFilePath,
+                             String localFilePath) {
+
+            this.httpClient = httpClient;
+            this.context = new HttpClientContext();
+            this.context.setCredentialsProvider(credentialsProvider);
+            this.remoteDirpaths = remoteDirPaths;
+            this.remoteFilePath = remoteFilePath;
+            this.localFilePath = localFilePath;
+        }
+
+        @Override
+        public void run() {
+            try {
+
+                // Create Remote Directories
+                for (String path : remoteDirpaths) {
+                    HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL")
+                            .setUri(path + "/")
+                            .build();
+
+                    CloseableHttpResponse response = httpClient.execute(mkcolRequest, context);
+                }
+
+                // Create File
+                HttpUriRequest request = RequestBuilder.create("PUT")
+                        .setUri(remoteFilePath)
+                        .setEntity(new FileEntity(new File(localFilePath)))
+                        .build();
+
+                CloseableHttpResponse response = httpClient.execute(request, context);
+
+                try {
+                    Notifications.Bus.notify(new Notification("demandware", "[request] ", request.getURI().toString(), NotificationType.INFORMATION));
+                } finally {
+                    response.close();
+                }
+            } catch (SSLException e) {
+                LOG.error("This plugin requires JDK8 or Upgrade your Java security policies to Unlimited Strength policies", e);
+            } catch (ClientProtocolException e) {
+                LOG.error(e);
+            } catch (IOException e) {
+                LOG.error(e);
+            }
+        }
+    }
+
 }
