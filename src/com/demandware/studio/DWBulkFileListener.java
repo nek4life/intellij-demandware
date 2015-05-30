@@ -19,9 +19,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
-
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
