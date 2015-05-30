@@ -27,7 +27,6 @@ import java.util.List;
 public class DWBulkFileListener implements ApplicationComponent, BulkFileListener {
     private MessageBusConnection connection;
     private static Logger LOG = Logger.getInstance(DWBulkFileListener.class);
-    private final ArrayList<String> existingFilePaths = new ArrayList<String>();
 
     public DWBulkFileListener() {
         connection = ApplicationManager.getApplication().getMessageBus().connect();
@@ -47,16 +46,7 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
     }
 
     @Override
-    public void before(@NotNull List<? extends VFileEvent> events) {
-        for (VFileEvent event : events) {
-            VirtualFile eventFile = event.getFile();
-            if (eventFile != null) {
-                if (new File(eventFile.getPath()).exists()) {
-                    existingFilePaths.add(event.getPath());
-                }
-            }
-        }
-    }
+    public void before(@NotNull List<? extends VFileEvent> events) {}
 
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
@@ -84,24 +74,15 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ServiceManager.getService(project, DWServerConnection.class);
 
-                                    if (existingFilePaths.contains(eventFile.getPath())) {
-                                        ApplicationManager.getApplication().executeOnPooledThread(new DWServerConnection.UpdateFileThread(
-                                                serverConnection.getClient(),
-                                                serverConnection.getCredientials(),
-                                                serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
-                                                eventFile.getPath()
-                                        ));
-                                    } else {
-                                        ApplicationManager.getApplication().executeOnPooledThread(
-                                                new DWServerConnection.NewFileThread(
-                                                        serverConnection.getClient(),
-                                                        serverConnection.getCredientials(),
-                                                        serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
-                                                        serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
-                                                        eventFile.getPath()
-                                                )
-                                        );
-                                    }
+                                    ApplicationManager.getApplication().executeOnPooledThread(
+                                            new DWServerConnection.UpdateFileThread(
+                                                    serverConnection.getClient(),
+                                                    serverConnection.getCredientials(),
+                                                    serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
+                                                    serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
+                                                    eventFile.getPath()
+                                            )
+                                    );
                                 }
                             }
                         }
@@ -110,5 +91,4 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
             }
         }
     }
-
 }

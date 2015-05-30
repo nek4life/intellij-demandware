@@ -97,57 +97,19 @@ public class DWServerConnection {
     }
 
     public static class UpdateFileThread extends Thread {
-        private final CloseableHttpClient httpClient;
-        private final HttpClientContext context;
-        private final HttpUriRequest request;
         private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
 
-        public UpdateFileThread(CloseableHttpClient httpClient,
-                                CredentialsProvider credentialsProvider,
-                                String remoteFilePath,
-                                String localFilePath) {
-
-            this.httpClient = httpClient;
-            this.context = new HttpClientContext();
-            this.context.setCredentialsProvider(credentialsProvider);
-            this.request = RequestBuilder.create("PUT")
-                    .setUri(remoteFilePath)
-                    .setEntity(new FileEntity(new File(localFilePath)))
-                    .build();
-        }
-
-        @Override
-        public void run() {
-            try {
-                CloseableHttpResponse response = httpClient.execute(request, context);
-                try {
-                    Notifications.Bus.notify(new Notification("demandware", "[request] ", request.getURI().toString(), NotificationType.INFORMATION));
-                } finally {
-                    response.close();
-                }
-            } catch (SSLException e) {
-                LOG.error("This plugin requires JDK8 or Upgrade your Java security policies to Unlimited Strength policies", e);
-            } catch (ClientProtocolException e) {
-                LOG.error(e);
-            } catch (IOException e) {
-                LOG.error(e);
-            }
-        }
-    }
-
-    public static class NewFileThread extends Thread {
         private final CloseableHttpClient httpClient;
         private final HttpClientContext context;
-        private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
         private final ArrayList<String> remoteDirpaths;
         private final String remoteFilePath;
         private final String localFilePath;
 
-        public NewFileThread(CloseableHttpClient httpClient,
-                             CredentialsProvider credentialsProvider,
-                             ArrayList<String> remoteDirPaths,
-                             String remoteFilePath,
-                             String localFilePath) {
+        public UpdateFileThread(CloseableHttpClient httpClient,
+                                CredentialsProvider credentialsProvider,
+                                ArrayList<String> remoteDirPaths,
+                                String remoteFilePath,
+                                String localFilePath) {
 
             this.httpClient = httpClient;
             this.context = new HttpClientContext();
@@ -159,27 +121,52 @@ public class DWServerConnection {
 
         @Override
         public void run() {
+            boolean isNewRemoteFile = true;
+
+            HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
             try {
-
-                // Create Remote Directories
-                for (String path : remoteDirpaths) {
-                    HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL")
-                            .setUri(path + "/")
-                            .build();
-
-                    CloseableHttpResponse response = httpClient.execute(mkcolRequest, context);
+                CloseableHttpResponse response = httpClient.execute(getRequest, context);
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    isNewRemoteFile = false;
                 }
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                // Create File
-                HttpUriRequest request = RequestBuilder.create("PUT")
-                        .setUri(remoteFilePath)
-                        .setEntity(new FileEntity(new File(localFilePath)))
-                        .build();
+            // Create Remote Directories if file is a new local or remote file
+            if (isNewRemoteFile) {
+                for (String path : remoteDirpaths) {
+                    HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL").setUri(path + "/").build();
+                    try {
+                        CloseableHttpResponse response = httpClient.execute(mkcolRequest, context);
+                        try {
+                            if (response.getStatusLine().getStatusCode() == 201) {
+                                Notifications.Bus.notify(new Notification("Demandware", "[Created] ", mkcolRequest.getURI().toString(), NotificationType.INFORMATION));
+                            }
+                        } finally {
+                            response.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
+            // Put remote file
+            HttpUriRequest request = RequestBuilder.create("PUT")
+                    .setUri(remoteFilePath)
+                    .setEntity(new FileEntity(new File(localFilePath)))
+                    .build();
+
+            try {
                 CloseableHttpResponse response = httpClient.execute(request, context);
-
                 try {
-                    Notifications.Bus.notify(new Notification("demandware", "[request] ", request.getURI().toString(), NotificationType.INFORMATION));
+                    if (isNewRemoteFile) {
+                        Notifications.Bus.notify(new Notification("Demandware", "[Created] ", request.getURI().toString(), NotificationType.INFORMATION));
+                    } else {
+                        Notifications.Bus.notify(new Notification("Demandware", "[Updated] ", request.getURI().toString(), NotificationType.INFORMATION));
+                    }
                 } finally {
                     response.close();
                 }
@@ -192,5 +179,4 @@ public class DWServerConnection {
             }
         }
     }
-
 }
