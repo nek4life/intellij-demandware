@@ -1,4 +1,4 @@
-package com.demandware.studio;
+package com.demandware.studio.webdav;
 
 import com.demandware.studio.projectWizard.DWModuleType;
 import com.demandware.studio.settings.DWSettingsProvider;
