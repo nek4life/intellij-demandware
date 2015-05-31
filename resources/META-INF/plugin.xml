@@ -23,17 +23,19 @@
   <depends>com.intellij.modules.lang</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
+    <!-- Module Extensions -->
     <moduleType id="DW_MODULE_TYPE" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
     <projectService id="DW_SETTINGS_PROVIDER" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
-    <projectService id="DW_SERVER_CONNECTION" serviceImplementation="com.demandware.studio.DWServerConnection"/>
+    <projectService id="DW_SERVER_CONNECTION" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
     <projectConfigurable id="DW_SETTINGS_CONFIGURABLE" groupId="tools" instance="com.demandware.studio.settings.DWSettingsConfigurable"/>
+    <!-- ISML Extensions-->
+    <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
   </extensions>
 
   <application-components>
     <!-- Add your application components here -->
     <component>
-      <implementation-class>com.demandware.studio.DWBulkFileListener</implementation-class>
+      <implementation-class>com.demandware.studio.webdav.DWBulkFileListener</implementation-class>
     </component>
   </application-components>
 
