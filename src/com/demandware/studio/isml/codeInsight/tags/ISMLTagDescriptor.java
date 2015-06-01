@@ -1,5 +1,6 @@
 package com.demandware.studio.isml.codeInsight.tags;
 
+import com.intellij.html.impl.RelaxedHtmlFromSchemaElementDescriptor;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.html.dtd.HtmlNSDescriptorImpl;
@@ -77,8 +78,6 @@ public class ISMLTagDescriptor implements XmlElementDescriptor {
 
     @Override
     public XmlAttributeDescriptor[] getAttributesDescriptors(@Nullable XmlTag context) {
-        final XmlAttributeDescriptor[] commonAttributes = HtmlNSDescriptorImpl.getCommonAttributeDescriptors(context);
-
         if (context != null) {
             final String tagName = context.getName();
             if (attrMap.containsKey(tagName)) {
