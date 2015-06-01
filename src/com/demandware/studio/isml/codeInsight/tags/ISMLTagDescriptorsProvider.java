@@ -42,14 +42,26 @@ public class ISMLTagDescriptorsProvider implements XmlElementDescriptorProvider,
             "isstatus",
     };
 
+
     @Nullable
     @Override
     public XmlElementDescriptor getDescriptor(XmlTag tag) {
+        if (!(tag instanceof HtmlTag)) {
+            return null;
+        }
+
+        final XmlNSDescriptor nsDescriptor = tag.getNSDescriptor(tag.getNamespace(), false);
+        final XmlElementDescriptor descriptor = nsDescriptor != null ? nsDescriptor.getElementDescriptor(tag) : null;
+        if (descriptor != null && !(descriptor instanceof AnyXmlElementDescriptor)) {
+            return null;
+        }
+
         return new ISMLTagDescriptor(tag.getName(), tag);
     }
 
     @Override
     public void addTagNameVariants(List<LookupElement> elements, XmlTag tag, String prefix) {
+        if (!(tag instanceof HtmlTag)) return;
         for (String tagName : ismlTagNames) {
             elements.add(LookupElementBuilder.create(tagName));
         }
