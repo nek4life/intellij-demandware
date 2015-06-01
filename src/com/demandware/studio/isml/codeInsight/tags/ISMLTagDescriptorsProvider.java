@@ -29,6 +29,7 @@ public class ISMLTagDescriptorsProvider implements XmlElementDescriptorProvider,
             "isinclude",
             "isloop",
             "ismodule",
+            "isnext",
             "isobject",
             "isprint",
             "isredirect",
@@ -41,11 +42,10 @@ public class ISMLTagDescriptorsProvider implements XmlElementDescriptorProvider,
             "isstatus",
     };
 
-
     @Nullable
     @Override
     public XmlElementDescriptor getDescriptor(XmlTag tag) {
-        return null;
+        return new ISMLTagDescriptor(tag.getName(), tag);
     }
 
     @Override

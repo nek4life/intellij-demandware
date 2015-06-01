@@ -31,6 +31,7 @@
     <!-- ISML Extensions-->
     <fileTypeFactory implementation="com.demandware.studio.isml.ISMLLanguageTypeFactory"/>
     <xml.tagNameProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
+    <xml.elementDescriptorProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
   </extensions>
 
