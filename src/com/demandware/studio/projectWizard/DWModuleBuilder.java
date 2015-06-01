@@ -16,6 +16,7 @@ public class DWModuleBuilder extends ModuleBuilder {
     private String username;
     private String password;
     private String version;
+    private boolean autoUploadEnabled;
 
     @Override
     public void setupRootModel(ModifiableRootModel modifiableRootModel) throws ConfigurationException {
@@ -25,6 +26,7 @@ public class DWModuleBuilder extends ModuleBuilder {
         settingsProvider.setUsername(username);
         settingsProvider.setPassword(password);
         settingsProvider.setVersion(version);
+        settingsProvider.setAutoUploadEnabled(autoUploadEnabled);
     }
 
     @Override
@@ -32,11 +34,12 @@ public class DWModuleBuilder extends ModuleBuilder {
         return DWModuleType.getInstance();
     }
 
-    public void updateSettings(String hostname, String username, String password, String version) {
+    public void updateSettings(String hostname, String username, String password, String version, boolean autoUploadEnabled) {
         this.hostname = hostname;
         this.username = username;
         this.password = password;
         this.version = version;
+        this.autoUploadEnabled = autoUploadEnabled;
     }
 
     @Nullable

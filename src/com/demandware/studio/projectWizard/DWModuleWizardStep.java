@@ -32,7 +32,12 @@ public class DWModuleWizardStep extends ModuleWizardStep {
 
         if (projectBuilder instanceof DWModuleBuilder) {
             ((DWModuleBuilder) projectBuilder).updateSettings(
-                    myPanel.getHostname(), myPanel.getUsername(), myPanel.getPassword(), myPanel.getVersion());
+                    myPanel.getHostname(),
+                    myPanel.getUsername(),
+                    myPanel.getPassword(),
+                    myPanel.getVersion(),
+                    myPanel.getAutoUploadEnabled()
+            );
         }
     }
 }
