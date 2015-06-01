@@ -81,7 +81,7 @@ public class ISMLTagDescriptor implements XmlElementDescriptor {
 
         if (context != null) {
             final String tagName = context.getName();
-            if (tagName != null && attrMap.containsKey(tagName)) {
+            if (attrMap.containsKey(tagName)) {
                 final String[] attrs = attrMap.get(tagName).split(",");
                 final XmlAttributeDescriptor[] result = new XmlAttributeDescriptor[attrs.length];
                 for (int i = 0; i < attrs.length; i++) {
@@ -90,7 +90,8 @@ public class ISMLTagDescriptor implements XmlElementDescriptor {
                 return result;
             }
         }
-        return commonAttributes;
+        final XmlAttributeDescriptor[] commonAttributes = HtmlNSDescriptorImpl.getCommonAttributeDescriptors(context);
+        return RelaxedHtmlFromSchemaElementDescriptor.addAttrDescriptorsForFacelets(context, commonAttributes);
     }
 
     @Nullable
