@@ -22,8 +22,9 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DWServerConnection {
     private final String baseServerPath;
@@ -40,48 +41,40 @@ public class DWServerConnection {
 
         credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
-                new AuthScope(hostname, AuthScope.ANY_PORT),
-                new UsernamePasswordCredentials(username, password));
+            new AuthScope(hostname, AuthScope.ANY_PORT),
+            new UsernamePasswordCredentials(username, password));
 
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(200);
         connectionManager.setDefaultMaxPerRoute(20);
 
         client = HttpClients.custom()
-                .setConnectionManager(connectionManager)
-                .build();
+            .setConnectionManager(connectionManager)
+            .build();
     }
 
     public String getBaseServerPath() {
         return baseServerPath;
     }
 
-    public String getCartridgeName(String rootPath, String filePath) {
-        String[] parts = filePath.substring(0, rootPath.length()).split(File.separator);
-        return parts[parts.length - 1];
+    public String getCartridgeName(String rootPath) {
+        return Paths.get(rootPath).getFileName().toString();
     }
 
     public String getRemoteFilePath(String rootPath, String filePath) {
         String relPath = filePath.substring(rootPath.length(), filePath.length());
-        String cartridgeName = getCartridgeName(rootPath, filePath);
+        String cartridgeName = getCartridgeName(rootPath);
         return baseServerPath + "/" + cartridgeName + relPath;
     }
 
     public ArrayList<String> getRemoteDirPaths(String rootPath, String filePath) {
         ArrayList<String> serverPaths = new ArrayList<String>();
-        String relPath = filePath.substring(rootPath.length(), filePath.length());
-        String cartridgeName = getCartridgeName(rootPath, filePath);
-
-        if (relPath.startsWith(File.separator)) {
-            relPath = relPath.substring(1, relPath.length());
-        }
-
-        String[] relParts = relPath.split(File.separator);
-        String[] relDirs = Arrays.copyOfRange(relParts, 0, relParts.length - 1);
+        Path relPath = Paths.get(rootPath).relativize(Paths.get(filePath)).getParent();
+        String cartridgeName = getCartridgeName(rootPath);
 
         String dirPath = "";
-        for (String relDir : relDirs) {
-            dirPath = dirPath + "/" + relDir;
+        for (Path subPath : relPath) {
+            dirPath = dirPath + "/" + subPath.getFileName();
             serverPaths.add(baseServerPath + "/" + cartridgeName + dirPath);
         }
 
@@ -155,9 +148,9 @@ public class DWServerConnection {
 
             // Put remote file
             HttpUriRequest request = RequestBuilder.create("PUT")
-                    .setUri(remoteFilePath)
-                    .setEntity(new FileEntity(new File(localFilePath)))
-                    .build();
+                .setUri(remoteFilePath)
+                .setEntity(new FileEntity(new File(localFilePath)))
+                .build();
 
             try {
                 CloseableHttpResponse response = httpClient.execute(request, context);
