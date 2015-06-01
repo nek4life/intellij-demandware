@@ -24,11 +24,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Module Extensions -->
-    <moduleType id="DW_MODULE_TYPE" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
-    <projectService id="DW_SETTINGS_PROVIDER" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
-    <projectService id="DW_SERVER_CONNECTION" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
-    <projectConfigurable id="DW_SETTINGS_CONFIGURABLE" groupId="tools" instance="com.demandware.studio.settings.DWSettingsConfigurable"/>
+    <moduleType id="DWModuleType" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
+    <projectService id="DWSettingsProvider" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
+    <projectService id="DWServerConnection" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
+    <projectConfigurable id="DWSettingsConfigurable" groupId="tools" instance="com.demandware.studio.settings.DWSettingsConfigurable"/>
     <!-- ISML Extensions-->
+    <fileTypeFactory implementation="com.demandware.studio.isml.ISMLLanguageTypeFactory"/>
+    <xml.tagNameProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
   </extensions>
 
