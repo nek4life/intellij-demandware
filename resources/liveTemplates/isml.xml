@@ -1,11 +1,11 @@
 <templateSet group="isml">
-  <template name="isif" value="&lt;isif condition=&quot;${$CONDITION$}&quot;&gt;$END$&lt;/isif&gt;" description="&lt;isif&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isi" value="&lt;isif condition=&quot;${$CONDITION$}&quot;&gt;$END$&lt;/isif&gt;" description="&lt;isif&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iselif" value="&lt;iselseif condition=&quot;${$CONDITION$}&quot;/&gt;$END$" description="&lt;isif&gt;&lt;iselseif/&gt;&lt;/isif&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isei" value="&lt;iselseif condition=&quot;${$CONDITION$}&quot;/&gt;$END$" description="&lt;iselseif/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="CONDITION" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
@@ -36,14 +36,14 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="ismod" value="&lt;ismodule template=&quot;$TEMPLATE$&quot; name=&quot;$NAME$&quot;/&gt;$END$" description="&lt;ismodule template=&quot;&quot; name=&quot;&quot;&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="ism" value="&lt;ismodule template=&quot;$TEMPLATE$&quot; name=&quot;$NAME$&quot;/&gt;$END$" description="&lt;ismodule template=&quot;&quot; name=&quot;&quot;&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="TEMPLATE" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="ismoda" value="&lt;ismodule template=&quot;$TEMPLATE$&quot; name=&quot;$NAME$&quot;&#10;    $ATTR$=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;ismodule template=&quot;&quot; name=&quot;&quot; attribute=&quot;&quot;&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isma" value="&lt;ismodule template=&quot;$TEMPLATE$&quot; name=&quot;$NAME$&quot;&#10;    $ATTR$=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;ismodule template=&quot;&quot; name=&quot;&quot; attribute=&quot;&quot;&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="TEMPLATE" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="ATTR" expression="" defaultValue="&quot;attribute&quot;" alwaysStopAt="true" />
@@ -59,7 +59,7 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="issc" value="&lt;isscript&gt;&#10;    $END$&#10;&lt;/isscript&gt;" description="&lt;isscript&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="iss" value="&lt;isscript&gt;&#10;    $END$&#10;&lt;/isscript&gt;" description="&lt;isscript&gt;" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
@@ -102,7 +102,7 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isca" value="&lt;iscache type=&quot;$TYPE$&quot; minute=&quot;$MINUTES$&quot;/&gt;$END$" description="&lt;iscache&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isca" value="&lt;iscache type=&quot;$TYPE$&quot; minute=&quot;$MINUTES$&quot;/&gt;$END$" description="&lt;iscache/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="TYPE" expression="" defaultValue="&quot;relative&quot;" alwaysStopAt="true" />
     <variable name="MINUTES" expression="" defaultValue="&quot;30&quot;" alwaysStopAt="true" />
     <context>
@@ -116,35 +116,35 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iscon" value="&lt;iscontent compact=&quot;$COMPACT$&quot;/&gt;$END$" description="&lt;iscontent&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isco" value="&lt;iscontent compact=&quot;$COMPACT$&quot;/&gt;$END$" description="&lt;iscontent&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="COMPACT" expression="" defaultValue="&quot;true&quot;" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iscont" value="&lt;iscontinue/&gt;$END$" description="&lt;iscontinue&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="iscon" value="&lt;iscontinue/&gt;$END$" description="&lt;iscontinue&gt;" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iscom" value="&lt;iscomment&gt;$END$&lt;/iscomment&gt;" description="&lt;iscomment&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isc" value="&lt;iscomment&gt;$END$&lt;/iscomment&gt;" description="&lt;iscomment&gt;" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iscook" value="&lt;iscookie name=&quot;$NAME$&quot; value=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;iscookie&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="iscoo" value="&lt;iscookie name=&quot;$NAME$&quot; value=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;iscookie&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="VALUE" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isbr" value="&lt;isbreak/&gt;$END$" description="&lt;isbreak/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isb" value="&lt;isbreak/&gt;$END$" description="&lt;isbreak/&gt;" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="iscomp" value="&lt;iscomponent pipeline=&quot;$PIPELINE$&quot; $ATTR$=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;iscomponent&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="iscom" value="&lt;iscomponent pipeline=&quot;$PIPELINE$&quot; $ATTR$=&quot;$VALUE$&quot;/&gt;$END$" description="&lt;iscomponent&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="PIPELINE" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="ATTR" expression="" defaultValue="&quot;attribute&quot;" alwaysStopAt="true" />
     <variable name="VALUE" expression="" defaultValue="" alwaysStopAt="true" />
@@ -162,29 +162,28 @@
     <variable name="VIEW" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
-
     </context>
   </template>
-  <template name="isrem" value="&lt;isremove name=&quot;$NAME$&quot; scope=&quot;$SCOPE$&quot;/&gt;$END$" description="&lt;isremove/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isr" value="&lt;isremove name=&quot;$NAME$&quot; scope=&quot;$SCOPE$&quot;/&gt;$END$" description="&lt;isremove/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="SCOPE" expression="" defaultValue="&quot;page&quot;" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isred" value="&lt;isredirect location=&quot;${URLUtils.url($LOCATION$)}&quot; permanent=&quot;$PERMANENT$&quot;/&gt;$END$" description="&lt;isredirect/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isre" value="&lt;isredirect location=&quot;${URLUtils.url($LOCATION$)}&quot; permanent=&quot;$PERMANENT$&quot;/&gt;$END$" description="&lt;isredirect/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="LOCATION" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="PERMANENT" expression="" defaultValue="&quot;false&quot;" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isao" value="&lt;isanalyticsoff/&gt;$END$" description="&lt;isanalyticsoff/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isa" value="&lt;isanalyticsoff/&gt;$END$" description="&lt;isanalyticsoff/&gt;" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isadc" value="&lt;isactivedatacontext category=&quot;${$CATEGORY$}&quot;/&gt;" description="&lt;isactivedatacontext/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="isad" value="&lt;isactivedatacontext category=&quot;${$CATEGORY$}&quot;/&gt;" description="&lt;isactivedatacontext/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="CATEGORY" expression="" defaultValue="&quot;pdict.ProductSearchResult.category&quot;" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
@@ -195,7 +194,7 @@
       <option name="HTML_TEXT" value="true" />
     </context>
   </template>
-  <template name="isel" value="&lt;iselse/&gt;$end$" description="&lt;iselse/&gt;" toReformat="true" toShortenFQNames="true">
+  <template name="ise" value="&lt;iselse/&gt;$end$" description="&lt;iselse/&gt;" toReformat="true" toShortenFQNames="true">
     <variable name="end" expression="" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="HTML_TEXT" value="true" />
