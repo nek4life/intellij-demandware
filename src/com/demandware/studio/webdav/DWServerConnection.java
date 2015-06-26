@@ -7,23 +7,31 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 
 public class DWServerConnection {
@@ -31,8 +39,7 @@ public class DWServerConnection {
     private final CloseableHttpClient client;
     private final CredentialsProvider credentialsProvider;
 
-
-    public DWServerConnection(DWSettingsProvider settingsProvider) {
+    public DWServerConnection(DWSettingsProvider settingsProvider) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         String hostname = settingsProvider.getHostname();
         String username = settingsProvider.getUsername();
         String password = settingsProvider.getPassword();
@@ -44,7 +51,12 @@ public class DWServerConnection {
             new AuthScope(hostname, AuthScope.ANY_PORT),
             new UsernamePasswordCredentials(username, password));
 
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        // SSLContextFactory to allow all hosts. Without this an SSLException is thrown with self signed certs
+        SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (arg0, arg1) -> true).build();
+        SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create().register("https", socketFactory).build();
+
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
         connectionManager.setMaxTotal(200);
         connectionManager.setDefaultMaxPerRoute(20);
 
@@ -132,13 +144,10 @@ public class DWServerConnection {
                 for (String path : remoteDirpaths) {
                     HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL").setUri(path + "/").build();
                     try {
-                        CloseableHttpResponse response = httpClient.execute(mkcolRequest, context);
-                        try {
+                        try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
                             if (response.getStatusLine().getStatusCode() == 201) {
                                 Notifications.Bus.notify(new Notification("Demandware", "[Created] ", mkcolRequest.getURI().toString(), NotificationType.INFORMATION));
                             }
-                        } finally {
-                            response.close();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -153,20 +162,13 @@ public class DWServerConnection {
                 .build();
 
             try {
-                CloseableHttpResponse response = httpClient.execute(request, context);
-                try {
+                try (CloseableHttpResponse response = httpClient.execute(request, context)) {
                     if (isNewRemoteFile) {
                         Notifications.Bus.notify(new Notification("Demandware", "[Created] ", request.getURI().toString(), NotificationType.INFORMATION));
                     } else {
                         Notifications.Bus.notify(new Notification("Demandware", "[Updated] ", request.getURI().toString(), NotificationType.INFORMATION));
                     }
-                } finally {
-                    response.close();
                 }
-            } catch (SSLException e) {
-                LOG.error("This plugin requires JDK8 or Upgrade your Java security policies to Unlimited Strength policies", e);
-            } catch (ClientProtocolException e) {
-                LOG.error(e);
             } catch (IOException e) {
                 LOG.error(e);
             }
