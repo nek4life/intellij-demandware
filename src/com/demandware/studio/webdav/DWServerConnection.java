@@ -1,10 +1,14 @@
 package com.demandware.studio.webdav;
 
 import com.demandware.studio.settings.DWSettingsProvider;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentManager;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -104,18 +108,20 @@ public class DWServerConnection {
     public static class UpdateFileThread extends Thread {
         private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
 
+        private final Project project;
         private final CloseableHttpClient httpClient;
         private final HttpClientContext context;
         private final ArrayList<String> remoteDirpaths;
         private final String remoteFilePath;
         private final String localFilePath;
 
-        public UpdateFileThread(CloseableHttpClient httpClient,
+        public UpdateFileThread(Project project, CloseableHttpClient httpClient,
                                 CredentialsProvider credentialsProvider,
                                 ArrayList<String> remoteDirPaths,
                                 String remoteFilePath,
                                 String localFilePath) {
 
+            this.project = project;
             this.httpClient = httpClient;
             this.context = new HttpClientContext();
             this.context.setCredentialsProvider(credentialsProvider);
@@ -127,6 +133,13 @@ public class DWServerConnection {
         @Override
         public void run() {
             boolean isNewRemoteFile = true;
+
+            // Get the Console to Log information to.
+            ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("Demandware");
+            ContentManager contentManager = toolWindow.getContentManager();
+            Content content = contentManager.getContent(0);
+            assert content != null;
+            ConsoleView consoleView = (ConsoleView) content.getComponent();
 
             HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
             try {
@@ -146,7 +159,7 @@ public class DWServerConnection {
                     try {
                         try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
                             if (response.getStatusLine().getStatusCode() == 201) {
-                                Notifications.Bus.notify(new Notification("Demandware", "[Created] ", mkcolRequest.getURI().toString(), NotificationType.INFORMATION));
+                                consoleView.print("[Created] " + mkcolRequest.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                             }
                         }
                     } catch (IOException e) {
@@ -164,9 +177,9 @@ public class DWServerConnection {
             try {
                 try (CloseableHttpResponse response = httpClient.execute(request, context)) {
                     if (isNewRemoteFile) {
-                        Notifications.Bus.notify(new Notification("Demandware", "[Created] ", request.getURI().toString(), NotificationType.INFORMATION));
+                        consoleView.print("[Created] " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                     } else {
-                        Notifications.Bus.notify(new Notification("Demandware", "[Updated] ", request.getURI().toString(), NotificationType.INFORMATION));
+                        consoleView.print("[Updated] " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                     }
                 }
             } catch (IOException e) {

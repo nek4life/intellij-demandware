@@ -71,14 +71,16 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ServiceManager.getService(project, DWServerConnection.class);
 
+
                                     ApplicationManager.getApplication().executeOnPooledThread(
-                                            new DWServerConnection.UpdateFileThread(
-                                                    serverConnection.getClient(),
-                                                    serverConnection.getCredientials(),
-                                                    serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
-                                                    serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
-                                                    eventFile.getPath()
-                                            )
+                                        new DWServerConnection.UpdateFileThread(
+                                            project,
+                                            serverConnection.getClient(),
+                                            serverConnection.getCredientials(),
+                                            serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
+                                            serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
+                                            eventFile.getPath()
+                                        )
                                     );
                                 }
                             }

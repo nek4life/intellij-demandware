@@ -28,6 +28,7 @@
     <projectService id="DWSettingsProvider" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
     <projectService id="DWServerConnection" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
     <projectConfigurable id="DWSettingsConfigurable" groupId="tools" instance="com.demandware.studio.settings.DWSettingsConfigurable"/>
+    <toolWindow id="Demandware" icon="/icons/demandware.png" anchor="bottom" factoryClass="com.demandware.studio.toolWindow.DWToolWindowFactory"/>
     <!-- ISML Extensions-->
     <fileTypeFactory implementation="com.demandware.studio.isml.ISMLLanguageTypeFactory"/>
     <xml.tagNameProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
