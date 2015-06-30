@@ -1,20 +1,26 @@
-package com.demandware.studio.settings;
+package com.demandware.studio.facet;
+
+import com.demandware.studio.settings.DWSettingsProvider;
+import com.intellij.facet.ui.FacetEditorContext;
+import com.intellij.facet.ui.FacetEditorTab;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.UUID;
 
-public class DWSettingsPanel {
+public class DWFacetEditorTab extends FacetEditorTab {
+    private final DWSettingsProvider mySettingsProvider;
+
+    public DWFacetEditorTab(FacetEditorContext editorContext) {
+        mySettingsProvider = DWSettingsProvider.getInstance(editorContext.getModule());
+    }
+
     private JTextField hostnameField;
     private JTextField usernameField;
     private JTextField versionField;
     private JPasswordField passwordField;
-    private JPanel dwSettingsPanel;
+    private JPanel dwFacetEditorTab;
     private JCheckBox autoUploadEnabledField;
-    private final DWSettingsProvider mySettingsProvider;
-
-    public DWSettingsPanel(DWSettingsProvider provider) {
-        mySettingsProvider = provider;
-    }
 
     public String getHostname() {
         return hostnameField.getText();
@@ -56,10 +62,17 @@ public class DWSettingsPanel {
         autoUploadEnabledField.setSelected(checked);
     }
 
-    public JPanel createPanel() {
-        return dwSettingsPanel;
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
+    @NotNull
+    @Override
+    public JComponent createComponent() {
+        return dwFacetEditorTab;
+    }
+
+    @Override
     public void apply() {
         mySettingsProvider.setHostname(getHostname());
         mySettingsProvider.setUsername(getUsername());
@@ -68,6 +81,7 @@ public class DWSettingsPanel {
         mySettingsProvider.setAutoUploadEnabled(getAutoUploadEnabled());
     }
 
+    @Override
     public void reset() {
         setHostname(mySettingsProvider.getHostname());
         setUsername(mySettingsProvider.getUsername());
@@ -76,6 +90,7 @@ public class DWSettingsPanel {
         setAutoUploadEnabled(mySettingsProvider.getAutoUploadEnabled());
     }
 
+    @Override
     public boolean isModified() {
         return !getHostname().equals(mySettingsProvider.getHostname()) ||
                 !getUsername().equals(mySettingsProvider.getUsername()) ||
@@ -84,7 +99,15 @@ public class DWSettingsPanel {
                 !getAutoUploadEnabled() == mySettingsProvider.getAutoUploadEnabled();
     }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
+
+    @Override
+    public void disposeUIResources() {
+
+    }
+
+    @Nls
+    @Override
+    public String getDisplayName() {
+        return "Demandware";
     }
 }

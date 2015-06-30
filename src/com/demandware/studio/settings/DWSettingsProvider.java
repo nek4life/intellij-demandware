@@ -2,25 +2,30 @@ package com.demandware.studio.settings;
 
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleServiceManager;
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 
 @State(
         name = "DWSettingsProvider",
         storages = {
-                @Storage(file = StoragePathMacros.WORKSPACE_FILE)
+                @Storage(file = StoragePathMacros.MODULE_FILE)
         }
 )
 public class DWSettingsProvider implements PersistentStateComponent<DWSettingsProvider.State> {
-    private State myState = new State();
     public static final Logger LOG = Logger.getInstance(DWSettingsProvider.class);
+    private State myState = new State();
 
-    public static DWSettingsProvider getInstance(Project project) {
-        return ServiceManager.getService(project, DWSettingsProvider.class);
+    public static DWSettingsProvider getInstance(Module module) {
+        return ModuleServiceManager.getService(module, DWSettingsProvider.class);
     }
 
     public String getHostname() {
@@ -42,9 +47,9 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
     public String getPassword() {
         String password;
         try {
-            password = PasswordSafe.getInstance().getPassword(null, DWSettingsPanel.class, "DW_SETTINGS_PASSWORD_KEY");
+            password = PasswordSafe.getInstance().getPassword(null, DWSettingsPanel.class, myState.passwordKey);
         } catch (PasswordSafeException e) {
-            LOG.info("Couldn't get password for key [DW_SETTINGS_PASSWORD_KEY]", e);
+            LOG.info("Couldn't get password for key " + myState.passwordKey, e);
             password = "";
         }
         return StringUtil.notNullize(password);
@@ -52,9 +57,9 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
 
     public void setPassword(String password) {
         try {
-            PasswordSafe.getInstance().storePassword(null, DWSettingsPanel.class, "DW_SETTINGS_PASSWORD_KEY", password != null ? password : "");
+            PasswordSafe.getInstance().storePassword(null, DWSettingsPanel.class, myState.passwordKey, password != null ? password : "");
         } catch (PasswordSafeException e) {
-            LOG.info("Couldn't set password for key [DW_SETTINGS_PASSWORD_KEY]", e);
+            LOG.info("Couldn't set password for key " + myState.passwordKey, e);
         }
     }
 
@@ -74,6 +79,14 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         myState.autoUploadEnabled = autoUploadEnabled;
     }
 
+    public String getPasswordKey() {
+        return myState.passwordKey;
+    }
+
+    public void setPasswordKey(String passwordKey) {
+        myState.passwordKey = passwordKey;
+    }
+
     @Override
     public State getState() {
         return myState;
@@ -84,6 +97,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         myState.hostname = state.hostname;
         myState.username = state.username;
         myState.password = state.password;
+        myState.passwordKey = state.passwordKey != null ? state.passwordKey : UUID.randomUUID().toString();
         myState.version = state.version;
         myState.autoUploadEnabled = state.autoUploadEnabled;
     }
@@ -92,6 +106,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
         public String hostname;
         public String username;
         public String password;
+        public String passwordKey;
         public String version;
         public boolean autoUploadEnabled;
     }

@@ -54,16 +54,15 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
 
             if (eventFile != null && !eventFile.isDirectory()) {
                 for (Project project : projects) {
-
-                    // Bail out if auto uploads are not enabled.
-                    if (!DWSettingsProvider.getInstance(project).getAutoUploadEnabled()) {
-                        return;
-                    }
-
                     Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(eventFile);
 
                     if (module != null) {
                         ModuleType CurrentModuleType = ModuleType.get(module);
+
+                        // Bail out if auto uploads are not enabled.
+                        if (!DWSettingsProvider.getInstance(module).getAutoUploadEnabled()) {
+                            return;
+                        }
 
                         if (CurrentModuleType instanceof DWModuleType) {
 

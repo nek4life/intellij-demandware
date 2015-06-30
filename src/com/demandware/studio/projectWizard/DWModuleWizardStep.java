@@ -2,11 +2,9 @@ package com.demandware.studio.projectWizard;
 
 import com.demandware.studio.settings.DWSettingsPanel;
 import com.demandware.studio.settings.DWSettingsProvider;
-import com.intellij.compiler.ant.ProjectBuild;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 
 import javax.swing.*;
 import java.util.ResourceBundle;
@@ -18,7 +16,7 @@ public class DWModuleWizardStep extends ModuleWizardStep {
 
     public DWModuleWizardStep(WizardContext context) {
         myContext = context;
-        myPanel = new DWSettingsPanel(new DWSettingsProvider(), false);
+        myPanel = new DWSettingsPanel(new DWSettingsProvider());
     }
 
     @Override
