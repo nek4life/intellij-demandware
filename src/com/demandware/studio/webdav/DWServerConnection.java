@@ -1,12 +1,13 @@
 package com.demandware.studio.webdav;
 
 import com.demandware.studio.settings.DWSettingsProvider;
-import com.demandware.studio.toolWindow.DWToolWindowFactory;
+import com.demandware.studio.toolWindow.DWConsoleService;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -30,7 +31,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
@@ -113,17 +113,19 @@ public class DWServerConnection {
         private final ArrayList<String> remoteDirpaths;
         private final String remoteFilePath;
         private final String localFilePath;
+        private final Project project;
 
-        public UpdateFileThread(@Nullable Project project,
+        public UpdateFileThread(Project project,
                                 final String title,
                                 final boolean canBeCancelled,
-                                @Nullable final PerformInBackgroundOption backgroundOption,
+                                final PerformInBackgroundOption backgroundOption,
                                 CloseableHttpClient httpClient,
                                 CredentialsProvider credentialsProvider,
                                 ArrayList<String> remoteDirPaths,
                                 String remoteFilePath,
                                 String localFilePath) {
             super(project, title, canBeCancelled, backgroundOption);
+            this.project = project;
             this.httpClient = httpClient;
             this.context = new HttpClientContext();
             this.context.setCredentialsProvider(credentialsProvider);
@@ -135,7 +137,7 @@ public class DWServerConnection {
         @Override
         public void run(@NotNull ProgressIndicator indicator) {
             boolean isNewRemoteFile = true;
-            ConsoleView consoleView = DWToolWindowFactory.getConsoleView();
+            ConsoleView consoleView = ServiceManager.getService(project, DWConsoleService.class).getConsoleView();
 
             indicator.setFraction(.33);
 

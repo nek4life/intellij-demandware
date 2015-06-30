@@ -73,7 +73,7 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                     DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
                                     ProgressManager.getInstance().run(new DWServerConnection.UpdateFileThread(
                                             project,
-                                            "Syncing Files to: " + DWSettingsProvider.getInstance(module).getHostname(),
+                                            "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
                                             true,
                                             PerformInBackgroundOption.ALWAYS_BACKGROUND,
                                             serverConnection.getClient(),
