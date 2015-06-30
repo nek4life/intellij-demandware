@@ -14,7 +14,6 @@ import com.intellij.xml.XmlAttributeDescriptor;
 import com.intellij.xml.XmlElementDescriptor;
 import com.intellij.xml.XmlElementsGroup;
 import com.intellij.xml.XmlNSDescriptor;
-import com.intellij.xml.impl.schema.AnyXmlAttributeDescriptor;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,7 +83,7 @@ public class ISMLTagDescriptor implements XmlElementDescriptor {
                 final String[] attrs = attrMap.get(tagName).split(",");
                 final XmlAttributeDescriptor[] result = new XmlAttributeDescriptor[attrs.length];
                 for (int i = 0; i < attrs.length; i++) {
-                    result[i] = new AnyXmlAttributeDescriptor(attrs[i]);
+                    result[i] = new ISMLXmlAttributeDescriptor(tagName, attrs[i]);
                 }
                 return result;
             }
