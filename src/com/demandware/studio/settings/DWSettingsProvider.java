@@ -47,7 +47,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
     public String getPassword() {
         String password;
         try {
-            password = PasswordSafe.getInstance().getPassword(null, DWSettingsPanel.class, myState.passwordKey);
+            password = PasswordSafe.getInstance().getPassword(null, DWSettingsProvider.class, myState.passwordKey);
         } catch (PasswordSafeException e) {
             LOG.info("Couldn't get password for key " + myState.passwordKey, e);
             password = "";
@@ -57,7 +57,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
 
     public void setPassword(String password) {
         try {
-            PasswordSafe.getInstance().storePassword(null, DWSettingsPanel.class, myState.passwordKey, password != null ? password : "");
+            PasswordSafe.getInstance().storePassword(null, DWSettingsProvider.class, myState.passwordKey, password != null ? password : "");
         } catch (PasswordSafeException e) {
             LOG.info("Couldn't set password for key " + myState.passwordKey, e);
         }

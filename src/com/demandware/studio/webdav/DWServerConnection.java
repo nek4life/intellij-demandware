@@ -4,6 +4,9 @@ import com.demandware.studio.settings.DWSettingsProvider;
 import com.demandware.studio.toolWindow.DWToolWindowFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -134,6 +137,11 @@ public class DWServerConnection {
                 CloseableHttpResponse response = httpClient.execute(getRequest, context);
                 if (response.getStatusLine().getStatusCode() == 200) {
                     isNewRemoteFile = false;
+                }
+                if (response.getStatusLine().getStatusCode() == 401) {
+                    Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
+                        "Please check your server configurations in the Demandware facet settings.", NotificationType.INFORMATION));
+                    return;
                 }
                 response.close();
             } catch (IOException e) {
