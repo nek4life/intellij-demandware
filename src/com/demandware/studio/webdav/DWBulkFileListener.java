@@ -9,9 +9,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleServiceManager;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -75,7 +73,7 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                     DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
                                     ProgressManager.getInstance().run(new DWServerConnection.UpdateFileThread(
                                             project,
-                                            "Syncing Files",
+                                            "Syncing Files to: " + DWSettingsProvider.getInstance(module).getHostname(),
                                             true,
                                             PerformInBackgroundOption.ALWAYS_BACKGROUND,
                                             serverConnection.getClient(),

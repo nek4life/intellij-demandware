@@ -133,9 +133,11 @@ public class DWServerConnection {
         }
 
         @Override
-        public void run(ProgressIndicator indicator) {
+        public void run(@NotNull ProgressIndicator indicator) {
             boolean isNewRemoteFile = true;
             ConsoleView consoleView = DWToolWindowFactory.getConsoleView();
+
+            indicator.setFraction(.33);
 
             HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
             try {
@@ -146,7 +148,6 @@ public class DWServerConnection {
                 if (response.getStatusLine().getStatusCode() == 401) {
                     Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
                             "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
-                    indicator.setFraction(1);
                     return;
                 }
                 response.close();
@@ -157,6 +158,8 @@ public class DWServerConnection {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            indicator.setFraction(.5);
 
             // Create Remote Directories if file is a new local or remote file
             if (isNewRemoteFile) {
@@ -173,6 +176,8 @@ public class DWServerConnection {
                     }
                 }
             }
+
+            indicator.setFraction(.80);
 
             // Put remote file
             HttpUriRequest request = RequestBuilder.create("PUT")
@@ -191,6 +196,8 @@ public class DWServerConnection {
             } catch (IOException e) {
                 LOG.error(e);
             }
+
+            indicator.setFraction(1);
         }
     }
 }
