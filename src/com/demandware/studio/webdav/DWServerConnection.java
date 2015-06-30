@@ -29,6 +29,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyManagementException;
@@ -38,21 +39,11 @@ import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 
 public class DWServerConnection {
-    private final String baseServerPath;
+    private final DWSettingsProvider settingsProvider;
     private final CloseableHttpClient client;
-    private final CredentialsProvider credentialsProvider;
 
     public DWServerConnection(DWSettingsProvider settingsProvider) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        String hostname = settingsProvider.getHostname();
-        String username = settingsProvider.getUsername();
-        String password = settingsProvider.getPassword();
-        String version = settingsProvider.getVersion();
-        baseServerPath = String.format("https://%s/on/demandware.servlet/webdav/Sites/Cartridges/%s", hostname, version);
-
-        credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(
-            new AuthScope(hostname, AuthScope.ANY_PORT),
-            new UsernamePasswordCredentials(username, password));
+        this.settingsProvider = settingsProvider;
 
         // SSLContextFactory to allow all hosts. Without this an SSLException is thrown with self signed certs
         SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (arg0, arg1) -> true).build();
@@ -69,7 +60,7 @@ public class DWServerConnection {
     }
 
     public String getBaseServerPath() {
-        return baseServerPath;
+        return String.format("https://%s/on/demandware.servlet/webdav/Sites/Cartridges/%s", settingsProvider.getHostname(), settingsProvider.getVersion());
     }
 
     public String getCartridgeName(String rootPath) {
@@ -79,7 +70,7 @@ public class DWServerConnection {
     public String getRemoteFilePath(String rootPath, String filePath) {
         String relPath = filePath.substring(rootPath.length(), filePath.length());
         String cartridgeName = getCartridgeName(rootPath);
-        return baseServerPath + "/" + cartridgeName + relPath;
+        return getBaseServerPath() + "/" + cartridgeName + relPath;
     }
 
     public ArrayList<String> getRemoteDirPaths(String rootPath, String filePath) {
@@ -90,7 +81,7 @@ public class DWServerConnection {
         String dirPath = "";
         for (Path subPath : relPath) {
             dirPath = dirPath + "/" + subPath.getFileName();
-            serverPaths.add(baseServerPath + "/" + cartridgeName + dirPath);
+            serverPaths.add(getBaseServerPath() + "/" + cartridgeName + dirPath);
         }
 
         return serverPaths;
@@ -101,6 +92,10 @@ public class DWServerConnection {
     }
 
     public CredentialsProvider getCredientials() {
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(
+            new AuthScope(settingsProvider.getHostname(), AuthScope.ANY_PORT),
+            new UsernamePasswordCredentials(settingsProvider.getUsername(), settingsProvider.getPassword()));
         return credentialsProvider;
     }
 
@@ -140,10 +135,14 @@ public class DWServerConnection {
                 }
                 if (response.getStatusLine().getStatusCode() == 401) {
                     Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
-                        "Please check your server configurations in the Demandware facet settings.", NotificationType.INFORMATION));
+                        "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
                     return;
                 }
                 response.close();
+            } catch (UnknownHostException e) {
+                Notifications.Bus.notify(new Notification("Demandware", "Unknown Host",
+                    "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                return;
             } catch (IOException e) {
                 e.printStackTrace();
             }
