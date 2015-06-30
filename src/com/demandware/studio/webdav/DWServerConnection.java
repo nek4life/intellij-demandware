@@ -8,6 +8,10 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.PerformInBackgroundOption;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
@@ -25,6 +29,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
@@ -55,8 +61,8 @@ public class DWServerConnection {
         connectionManager.setDefaultMaxPerRoute(20);
 
         client = HttpClients.custom()
-            .setConnectionManager(connectionManager)
-            .build();
+                .setConnectionManager(connectionManager)
+                .build();
     }
 
     public String getBaseServerPath() {
@@ -94,12 +100,12 @@ public class DWServerConnection {
     public CredentialsProvider getCredientials() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
-            new AuthScope(settingsProvider.getHostname(), AuthScope.ANY_PORT),
-            new UsernamePasswordCredentials(settingsProvider.getUsername(), settingsProvider.getPassword()));
+                new AuthScope(settingsProvider.getHostname(), AuthScope.ANY_PORT),
+                new UsernamePasswordCredentials(settingsProvider.getUsername(), settingsProvider.getPassword()));
         return credentialsProvider;
     }
 
-    public static class UpdateFileThread extends Thread {
+    public static class UpdateFileThread extends Task.Backgroundable {
         private final Logger LOG = Logger.getInstance(UpdateFileThread.class);
 
         private final CloseableHttpClient httpClient;
@@ -108,12 +114,16 @@ public class DWServerConnection {
         private final String remoteFilePath;
         private final String localFilePath;
 
-        public UpdateFileThread(CloseableHttpClient httpClient,
+        public UpdateFileThread(@Nullable Project project,
+                                final String title,
+                                final boolean canBeCancelled,
+                                @Nullable final PerformInBackgroundOption backgroundOption,
+                                CloseableHttpClient httpClient,
                                 CredentialsProvider credentialsProvider,
                                 ArrayList<String> remoteDirPaths,
                                 String remoteFilePath,
                                 String localFilePath) {
-
+            super(project, title, canBeCancelled, backgroundOption);
             this.httpClient = httpClient;
             this.context = new HttpClientContext();
             this.context.setCredentialsProvider(credentialsProvider);
@@ -123,7 +133,7 @@ public class DWServerConnection {
         }
 
         @Override
-        public void run() {
+        public void run(ProgressIndicator indicator) {
             boolean isNewRemoteFile = true;
             ConsoleView consoleView = DWToolWindowFactory.getConsoleView();
 
@@ -135,13 +145,14 @@ public class DWServerConnection {
                 }
                 if (response.getStatusLine().getStatusCode() == 401) {
                     Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
-                        "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                            "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                    indicator.setFraction(1);
                     return;
                 }
                 response.close();
             } catch (UnknownHostException e) {
                 Notifications.Bus.notify(new Notification("Demandware", "Unknown Host",
-                    "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                        "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
                 return;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,9 +176,9 @@ public class DWServerConnection {
 
             // Put remote file
             HttpUriRequest request = RequestBuilder.create("PUT")
-                .setUri(remoteFilePath)
-                .setEntity(new FileEntity(new File(localFilePath)))
-                .build();
+                    .setUri(remoteFilePath)
+                    .setEntity(new FileEntity(new File(localFilePath)))
+                    .build();
 
             try {
                 try (CloseableHttpResponse response = httpClient.execute(request, context)) {
@@ -183,3 +194,4 @@ public class DWServerConnection {
         }
     }
 }
+

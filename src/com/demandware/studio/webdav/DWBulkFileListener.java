@@ -8,6 +8,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleServiceManager;
 import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.progress.PerformInBackgroundOption;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -43,7 +47,8 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
     }
 
     @Override
-    public void before(@NotNull List<? extends VFileEvent> events) {}
+    public void before(@NotNull List<? extends VFileEvent> events) {
+    }
 
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
@@ -68,16 +73,17 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                             for (VirtualFile sourceRoot : ModuleRootManager.getInstance(module).getSourceRoots()) {
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
-
-                                    ApplicationManager.getApplication().executeOnPooledThread(
-                                        new DWServerConnection.UpdateFileThread(
+                                    ProgressManager.getInstance().run(new DWServerConnection.UpdateFileThread(
+                                            project,
+                                            "Syncing Files",
+                                            true,
+                                            PerformInBackgroundOption.ALWAYS_BACKGROUND,
                                             serverConnection.getClient(),
                                             serverConnection.getCredientials(),
                                             serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
                                             serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
                                             eventFile.getPath()
-                                        )
-                                    );
+                                    ));
                                 }
                             }
                         }
