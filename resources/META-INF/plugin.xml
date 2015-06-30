@@ -26,7 +26,7 @@
     <!-- Module Extensions -->
     <moduleType id="DWModuleType" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
     <moduleService id="DWSettingsProvider" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
-    <projectService id="DWServerConnection" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
+    <moduleService id="DWServerConnection" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
     <toolWindow id="Demandware" icon="/icons/demandware-13x13.png" anchor="bottom" factoryClass="com.demandware.studio.toolWindow.DWToolWindowFactory"/>
     <facetType implementation="com.demandware.studio.facet.DWFacetType"/>
     <frameworkSupport implementation="com.demandware.studio.facet.DWFrameworkSupportProvider"/>

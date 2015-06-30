@@ -9,11 +9,16 @@ import com.intellij.ui.content.Content;
 import org.jetbrains.annotations.NotNull;
 
 public class DWToolWindowFactory implements ToolWindowFactory {
+    public static ConsoleView consoleView;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        ConsoleView consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
+        consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
         Content content = toolWindow.getContentManager().getFactory().createContent(consoleView.getComponent(), "", true);
         toolWindow.getContentManager().addContent(content);
+    }
+
+    public static ConsoleView getConsoleView() {
+        return consoleView;
     }
 }
