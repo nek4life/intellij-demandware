@@ -33,7 +33,7 @@ public class ISMLXmlAttributeDescriptor extends AnyXmlAttributeDescriptor {
 
         Map<String, String[]> isprintMap = new HashMap<>();
         isprintMap.put("timezone", new String[]{"SITE", "INSTANCE", "utc"});
-        isprintMap.put("ecoding", new String[]{"on", "off"});
+        isprintMap.put("encoding", new String[]{"on", "off"});
         attrMap.put("isprint", isprintMap);
 
         Map<String, String[]> isredirectMap = new HashMap<>();
