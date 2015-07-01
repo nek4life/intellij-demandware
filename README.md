@@ -2,7 +2,7 @@
 ## Develop Demandware with Pleasure!
 
 ### Features
- * Project wizard to setup project or new module with ease.
+ * Project wizard to setup a project or new module with ease.
  * Sandbox File Uploading. Module Files are synced when they are modified and saved.
  * File upload console logging to verify file was modified or created successfully.
  * Auto completion for ISML tags, attributes, and known valid attribute values.
