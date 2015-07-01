@@ -72,15 +72,15 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
                                     ProgressManager.getInstance().run(new DWUpdateFileTask(
-                                            project,
-                                            "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
-                                            true,
-                                            PerformInBackgroundOption.ALWAYS_BACKGROUND,
-                                            serverConnection.getClient(),
-                                            serverConnection.getCredientials(),
-                                            serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
-                                            serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
-                                            eventFile.getPath()
+                                        project,
+                                        "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
+                                        true,
+                                        PerformInBackgroundOption.ALWAYS_BACKGROUND,
+                                        serverConnection.getClient(),
+                                        serverConnection.getCredientials(),
+                                        serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
+                                        serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
+                                        eventFile.getPath()
                                     ));
                                 }
                             }

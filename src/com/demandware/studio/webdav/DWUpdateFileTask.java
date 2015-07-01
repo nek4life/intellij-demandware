@@ -72,13 +72,13 @@ public class DWUpdateFileTask extends Task.Backgroundable {
             }
             if (response.getStatusLine().getStatusCode() == 401) {
                 Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
-                        "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                    "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
                 return;
             }
             response.close();
         } catch (UnknownHostException e) {
             Notifications.Bus.notify(new Notification("Demandware", "Unknown Host",
-                    "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
+                "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
             return;
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,9 +107,9 @@ public class DWUpdateFileTask extends Task.Backgroundable {
 
         // Put remote file
         HttpUriRequest request = RequestBuilder.create("PUT")
-                .setUri(remoteFilePath)
-                .setEntity(new FileEntity(new File(localFilePath)))
-                .build();
+            .setUri(remoteFilePath)
+            .setEntity(new FileEntity(new File(localFilePath)))
+            .build();
 
         try {
             try (CloseableHttpResponse response = httpClient.execute(request, context)) {

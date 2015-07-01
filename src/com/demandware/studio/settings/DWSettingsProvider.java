@@ -15,10 +15,10 @@ import java.util.UUID;
 
 
 @State(
-        name = "DWSettingsProvider",
-        storages = {
-                @Storage(file = StoragePathMacros.MODULE_FILE)
-        }
+    name = "DWSettingsProvider",
+    storages = {
+        @Storage(file = StoragePathMacros.MODULE_FILE)
+    }
 )
 public class DWSettingsProvider implements PersistentStateComponent<DWSettingsProvider.State> {
     public static final Logger LOG = Logger.getInstance(DWSettingsProvider.class);
