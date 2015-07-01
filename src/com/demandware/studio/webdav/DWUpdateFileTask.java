@@ -115,7 +115,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
                 consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             } else {
                 Date now = new Date();
-                consoleView.print("[" + timeFormat.format(now) + "] " + "Updated " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                consoleView.print("[" + timeFormat.format(now) + "] " + "Modified " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             }
         } catch (IOException e) {
             LOG.error(e);
