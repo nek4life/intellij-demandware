@@ -14,6 +14,6 @@ if you run Windows.
 
 ## Build
 To Build this plugin you will need to follow the instructions provided in the Intellij plugin
-wiki. http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html
+wiki http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html.
 You will also need to mark the resources folder as resources to include them in the plugin build.
 
