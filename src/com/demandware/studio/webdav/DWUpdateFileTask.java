@@ -65,17 +65,16 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         indicator.setFraction(.33);
 
         HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
-        try {
-            CloseableHttpResponse response = httpClient.execute(getRequest, context);
+        try (CloseableHttpResponse response = httpClient.execute(getRequest, context)) {
             if (response.getStatusLine().getStatusCode() == 200) {
                 isNewRemoteFile = false;
             }
+
             if (response.getStatusLine().getStatusCode() == 401) {
                 Notifications.Bus.notify(new Notification("Demandware", "Unauthorized Request",
                     "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
                 return;
             }
-            response.close();
         } catch (UnknownHostException e) {
             Notifications.Bus.notify(new Notification("Demandware", "Unknown Host",
                 "Please check your server configuration in the Demandware facet settings.", NotificationType.INFORMATION));
@@ -90,12 +89,11 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         if (isNewRemoteFile) {
             for (String path : remoteDirPaths) {
                 HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL").setUri(path + "/").build();
-                try {
-                    try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
-                        if (response.getStatusLine().getStatusCode() == 201) {
-                            Date now = new Date();
-                            consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + mkcolRequest.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                        }
+
+                try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
+                    if (response.getStatusLine().getStatusCode() == 201) {
+                        Date now = new Date();
+                        consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + mkcolRequest.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -111,15 +109,13 @@ public class DWUpdateFileTask extends Task.Backgroundable {
             .setEntity(new FileEntity(new File(localFilePath)))
             .build();
 
-        try {
-            try (CloseableHttpResponse response = httpClient.execute(request, context)) {
-                if (isNewRemoteFile) {
-                    Date now = new Date();
-                    consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                } else {
-                    Date now = new Date();
-                    consoleView.print("[" + timeFormat.format(now) + "] " + "Updated " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                }
+        try (CloseableHttpResponse response = httpClient.execute(request, context)) {
+            if (isNewRemoteFile) {
+                Date now = new Date();
+                consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+            } else {
+                Date now = new Date();
+                consoleView.print("[" + timeFormat.format(now) + "] " + "Updated " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             }
         } catch (IOException e) {
             LOG.error(e);
