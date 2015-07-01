@@ -24,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DWUpdateFileTask extends Task.Backgroundable {
     private final Logger LOG = Logger.getInstance(DWUpdateFileTask.class);
@@ -35,6 +37,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
     private final String remoteFilePath;
     private final String localFilePath;
     private final Project project;
+    private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
 
     public DWUpdateFileTask(Project project,
                             final String title,
@@ -90,7 +93,8 @@ public class DWUpdateFileTask extends Task.Backgroundable {
                 try {
                     try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
                         if (response.getStatusLine().getStatusCode() == 201) {
-                            consoleView.print("[Created] " + mkcolRequest.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                            Date now = new Date();
+                            consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + mkcolRequest.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                         }
                     }
                 } catch (IOException e) {
@@ -110,9 +114,11 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         try {
             try (CloseableHttpResponse response = httpClient.execute(request, context)) {
                 if (isNewRemoteFile) {
-                    consoleView.print("[Created] " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                    Date now = new Date();
+                    consoleView.print("[" + timeFormat.format(now) + "] " + "Created " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                 } else {
-                    consoleView.print("[Updated] " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                    Date now = new Date();
+                    consoleView.print("[" + timeFormat.format(now) + "] " + "Updated " + request.getURI().toString() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
                 }
             }
         } catch (IOException e) {
