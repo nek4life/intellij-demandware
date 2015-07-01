@@ -1,5 +1,5 @@
 # Intellij Demandware Plugin
-## Develop for Demandware with Pleasure!
+## Develop Demandware with Pleasure!
 
 ### Features
  * Project wizard to setup project or new module with ease.
