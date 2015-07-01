@@ -20,6 +20,7 @@ public class DWFrameworkSupportConfigurable extends FrameworkSupportConfigurable
     DWFrameworkSupportConfigurablePanel dwFrameworkSupportConfigurablePanel;
 
     public DWFrameworkSupportConfigurable(FrameworkSupportModel model) {
+        model.setFrameworkComponentEnabled("Demandware", true);
         dwFrameworkSupportConfigurablePanel = new DWFrameworkSupportConfigurablePanel();
     }
 
