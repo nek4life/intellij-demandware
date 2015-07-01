@@ -4,9 +4,6 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.project.Project;
 
-/**
- * Created by charliec on 6/30/15.
- */
 public class DWConsoleService {
     private final ConsoleView consoleView;
 

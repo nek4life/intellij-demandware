@@ -71,7 +71,7 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                             for (VirtualFile sourceRoot : ModuleRootManager.getInstance(module).getSourceRoots()) {
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
                                     DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
-                                    ProgressManager.getInstance().run(new DWServerConnection.UpdateFileThread(
+                                    ProgressManager.getInstance().run(new DWUpdateFileTask(
                                             project,
                                             "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
                                             true,
