@@ -8,11 +8,12 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleServiceManager;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -40,22 +41,21 @@ public class DWUpdateFileTask extends Task.Backgroundable {
     private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
 
     public DWUpdateFileTask(Project project,
+                            Module module,
                             final String title,
                             final boolean canBeCancelled,
                             final PerformInBackgroundOption backgroundOption,
-                            CloseableHttpClient httpClient,
-                            CredentialsProvider credentialsProvider,
-                            ArrayList<String> remoteDirPaths,
-                            String remoteFilePath,
+                            String sourceRootPath,
                             String localFilePath) {
         super(project, title, canBeCancelled, backgroundOption);
+        DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
         this.project = project;
-        this.httpClient = httpClient;
-        this.context = new HttpClientContext();
-        this.context.setCredentialsProvider(credentialsProvider);
-        this.remoteDirPaths = remoteDirPaths;
-        this.remoteFilePath = remoteFilePath;
         this.localFilePath = localFilePath;
+        this.context = new HttpClientContext();
+        this.context.setCredentialsProvider(serverConnection.getCredientials());
+        this.httpClient = serverConnection.getClient();
+        this.remoteDirPaths = serverConnection.getRemoteDirPaths(sourceRootPath, localFilePath);
+        this.remoteFilePath = serverConnection.getRemoteFilePath(sourceRootPath, localFilePath);
     }
 
     @Override

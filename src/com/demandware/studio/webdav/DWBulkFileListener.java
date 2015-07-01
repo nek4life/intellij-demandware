@@ -6,7 +6,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleServiceManager;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
 import com.intellij.openapi.progress.ProgressManager;
@@ -70,18 +69,17 @@ public class DWBulkFileListener implements ApplicationComponent, BulkFileListene
                         if (CurrentModuleType instanceof DWModuleType) {
                             for (VirtualFile sourceRoot : ModuleRootManager.getInstance(module).getSourceRoots()) {
                                 if (eventFile.getPath().contains(sourceRoot.getPath())) {
-                                    DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
-                                    ProgressManager.getInstance().run(new DWUpdateFileTask(
-                                        project,
-                                        "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
-                                        true,
-                                        PerformInBackgroundOption.ALWAYS_BACKGROUND,
-                                        serverConnection.getClient(),
-                                        serverConnection.getCredientials(),
-                                        serverConnection.getRemoteDirPaths(sourceRoot.getPath(), eventFile.getPath()),
-                                        serverConnection.getRemoteFilePath(sourceRoot.getPath(), eventFile.getPath()),
-                                        eventFile.getPath()
-                                    ));
+                                    ProgressManager.getInstance().run(
+                                        new DWUpdateFileTask(
+                                            project,
+                                            module,
+                                            "Syncing files to: " + DWSettingsProvider.getInstance(module).getHostname(),
+                                            true,
+                                            PerformInBackgroundOption.ALWAYS_BACKGROUND,
+                                            sourceRoot.getPath(),
+                                            eventFile.getPath()
+                                        )
+                                    );
                                 }
                             }
                         }
