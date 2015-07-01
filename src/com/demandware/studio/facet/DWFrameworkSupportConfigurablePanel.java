@@ -1,20 +1,14 @@
-package com.demandware.studio.settings;
+package com.demandware.studio.facet;
 
 import javax.swing.*;
-import java.util.UUID;
 
-public class DWSettingsPanel {
+public class DWFrameworkSupportConfigurablePanel {
     private JTextField hostnameField;
     private JTextField usernameField;
     private JTextField versionField;
     private JPasswordField passwordField;
     private JPanel dwSettingsPanel;
     private JCheckBox autoUploadEnabledField;
-    private final DWSettingsProvider mySettingsProvider;
-
-    public DWSettingsPanel(DWSettingsProvider provider) {
-        mySettingsProvider = provider;
-    }
 
     public String getHostname() {
         return hostnameField.getText();
@@ -58,30 +52,6 @@ public class DWSettingsPanel {
 
     public JPanel createPanel() {
         return dwSettingsPanel;
-    }
-
-    public void apply() {
-        mySettingsProvider.setHostname(getHostname());
-        mySettingsProvider.setUsername(getUsername());
-        mySettingsProvider.setPassword(getPassword());
-        mySettingsProvider.setVersion(getVersion());
-        mySettingsProvider.setAutoUploadEnabled(getAutoUploadEnabled());
-    }
-
-    public void reset() {
-        setHostname(mySettingsProvider.getHostname());
-        setUsername(mySettingsProvider.getUsername());
-        setPassword(mySettingsProvider.getPassword());
-        setVersion(mySettingsProvider.getVersion());
-        setAutoUploadEnabled(mySettingsProvider.getAutoUploadEnabled());
-    }
-
-    public boolean isModified() {
-        return !getHostname().equals(mySettingsProvider.getHostname()) ||
-                !getUsername().equals(mySettingsProvider.getUsername()) ||
-                !getPassword().equals(mySettingsProvider.getPassword()) ||
-                !getVersion().equals(mySettingsProvider.getVersion()) ||
-                !getAutoUploadEnabled() == mySettingsProvider.getAutoUploadEnabled();
     }
 
     private void createUIComponents() {

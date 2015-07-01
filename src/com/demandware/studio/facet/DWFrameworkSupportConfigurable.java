@@ -1,6 +1,5 @@
 package com.demandware.studio.facet;
 
-import com.demandware.studio.settings.DWSettingsPanel;
 import com.demandware.studio.settings.DWSettingsProvider;
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetManager;
@@ -18,16 +17,16 @@ import javax.swing.*;
 import java.util.UUID;
 
 public class DWFrameworkSupportConfigurable extends FrameworkSupportConfigurable {
-    DWSettingsPanel dwSettingsPanel;
+    DWFrameworkSupportConfigurablePanel dwFrameworkSupportConfigurablePanel;
 
     public DWFrameworkSupportConfigurable(FrameworkSupportModel model) {
-        dwSettingsPanel = new DWSettingsPanel(new DWSettingsProvider());
+        dwFrameworkSupportConfigurablePanel = new DWFrameworkSupportConfigurablePanel();
     }
 
     @Nullable
     @Override
     public JComponent getComponent() {
-        return dwSettingsPanel.createPanel();
+        return dwFrameworkSupportConfigurablePanel.createPanel();
     }
 
     @Override
@@ -36,11 +35,11 @@ public class DWFrameworkSupportConfigurable extends FrameworkSupportConfigurable
         ModifiableFacetModel facetModel = facetManager.createModifiableModel();
         DWSettingsProvider dwSettingsProvider = ModuleServiceManager.getService(module, DWSettingsProvider.class);
         dwSettingsProvider.setPasswordKey(UUID.randomUUID().toString());
-        dwSettingsProvider.setHostname(dwSettingsPanel.getHostname());
-        dwSettingsProvider.setUsername(dwSettingsPanel.getUsername());
-        dwSettingsProvider.setPassword(dwSettingsPanel.getPassword());
-        dwSettingsProvider.setVersion(dwSettingsPanel.getVersion());
-        dwSettingsProvider.setAutoUploadEnabled(dwSettingsPanel.getAutoUploadEnabled());
+        dwSettingsProvider.setHostname(dwFrameworkSupportConfigurablePanel.getHostname());
+        dwSettingsProvider.setUsername(dwFrameworkSupportConfigurablePanel.getUsername());
+        dwSettingsProvider.setPassword(dwFrameworkSupportConfigurablePanel.getPassword());
+        dwSettingsProvider.setVersion(dwFrameworkSupportConfigurablePanel.getVersion());
+        dwSettingsProvider.setAutoUploadEnabled(dwFrameworkSupportConfigurablePanel.getAutoUploadEnabled());
         Facet facet = FacetManager.getInstance(modifiableRootModel.getModule()).addFacet(DWFacetType.INSTANCE, "Demandware", null);
         facetModel.addFacet(facet);
         facetModel.commit();
