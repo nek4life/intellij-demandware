@@ -24,10 +24,10 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Module Extensions -->
-    <projectService id="DWConsoleView" serviceImplementation="com.demandware.studio.toolWindow.DWConsoleService"/>
-    <moduleType id="DWModuleType" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
-    <moduleService id="DWSettingsProvider" serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
-    <moduleService id="DWServerConnection" serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
+    <projectService serviceImplementation="com.demandware.studio.toolWindow.DWConsoleService"/>
+    <moduleType id="DW_MODULE" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
+    <moduleService serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
+    <moduleService serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
     <toolWindow id="Demandware" icon="/icons/demandware-13x13.png" anchor="bottom" factoryClass="com.demandware.studio.toolWindow.DWToolWindowFactory"/>
     <facetType implementation="com.demandware.studio.facet.DWFacetType"/>
     <frameworkSupport implementation="com.demandware.studio.facet.DWFrameworkSupportProvider"/>

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class DWModuleType extends ModuleType<DWModuleBuilder> {
-    private static final String ID = "DWModuleType";
+    private static final String ID = "DW_MODULE";
 
     public DWModuleType() {
         super(ID);
