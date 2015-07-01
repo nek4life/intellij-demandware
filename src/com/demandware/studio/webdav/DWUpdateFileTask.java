@@ -31,7 +31,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
 
     private final CloseableHttpClient httpClient;
     private final HttpClientContext context;
-    private final ArrayList<String> remoteDirpaths;
+    private final ArrayList<String> remoteDirPaths;
     private final String remoteFilePath;
     private final String localFilePath;
     private final Project project;
@@ -50,7 +50,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         this.httpClient = httpClient;
         this.context = new HttpClientContext();
         this.context.setCredentialsProvider(credentialsProvider);
-        this.remoteDirpaths = remoteDirPaths;
+        this.remoteDirPaths = remoteDirPaths;
         this.remoteFilePath = remoteFilePath;
         this.localFilePath = localFilePath;
     }
@@ -59,7 +59,6 @@ public class DWUpdateFileTask extends Task.Backgroundable {
     public void run(@NotNull ProgressIndicator indicator) {
         boolean isNewRemoteFile = true;
         ConsoleView consoleView = ServiceManager.getService(project, DWConsoleService.class).getConsoleView();
-
         indicator.setFraction(.33);
 
         HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
@@ -86,7 +85,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
 
         // Create Remote Directories if file is a new local or remote file
         if (isNewRemoteFile) {
-            for (String path : remoteDirpaths) {
+            for (String path : remoteDirPaths) {
                 HttpUriRequest mkcolRequest = RequestBuilder.create("MKCOL").setUri(path + "/").build();
                 try {
                     try (CloseableHttpResponse response = httpClient.execute(mkcolRequest, context)) {
