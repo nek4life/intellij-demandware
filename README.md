@@ -20,7 +20,7 @@ You will also need to mark the resources folder as resources to include them in 
 To create the plugin jar select "Prepare Plugin Module 'intellij-demandware' For Deployment from the
 build menu. This will create the intellij-demandware.jar in your project folder.
 
-## Installation
+## Installing the Plugin
 Now you can install the intellij-demandware.jar through the plugin preferences by using the
 'Install plugin from disk' option.
 
