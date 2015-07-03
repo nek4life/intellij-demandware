@@ -96,8 +96,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
     public void loadState(State state) {
         myState.hostname = state.hostname;
         myState.username = state.username;
-        myState.password = state.password;
-        myState.passwordKey = state.passwordKey != null ? state.passwordKey : UUID.randomUUID().toString();
+        myState.passwordKey = state.passwordKey;
         myState.version = state.version;
         myState.autoUploadEnabled = state.autoUploadEnabled;
     }
@@ -105,8 +104,7 @@ public class DWSettingsProvider implements PersistentStateComponent<DWSettingsPr
     public static class State {
         public String hostname;
         public String username;
-        public String password;
-        public String passwordKey;
+        public String passwordKey = UUID.randomUUID().toString();
         public String version;
         public boolean autoUploadEnabled;
     }
