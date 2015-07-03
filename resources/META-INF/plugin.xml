@@ -48,7 +48,11 @@
   </project-components>
 
   <actions>
-    <!-- Add your actions here -->
+
+    <action id="com.studio.demandware.webdav.clean.DWCleanAction" class="com.demandware.studio.webdav.clean.DWCleanAction"
+            text="Clean Cartridges" description="Clean Cartridges" icon="/icons/demandware-13x13.png">
+      <add-to-group group-id="BuildMenu" anchor="last"/>
+    </action>
   </actions>
 
 </idea-plugin>

@@ -4,6 +4,7 @@ import com.demandware.studio.settings.DWSettingsProvider;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class DWServerConnection {
     private final DWSettingsProvider settingsProvider;
     private final CloseableHttpClient client;
+    private final HttpClientContext context;
 
     public DWServerConnection(DWSettingsProvider settingsProvider) throws UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         this.settingsProvider = settingsProvider;
@@ -40,8 +42,11 @@ public class DWServerConnection {
         connectionManager.setDefaultMaxPerRoute(20);
 
         client = HttpClients.custom()
-            .setConnectionManager(connectionManager)
-            .build();
+                .setConnectionManager(connectionManager)
+                .build();
+
+        context = new HttpClientContext();
+        context.setCredentialsProvider(getCredientials());
     }
 
     public String getBaseServerPath() {
@@ -76,11 +81,15 @@ public class DWServerConnection {
         return client;
     }
 
+    public HttpClientContext getContext() {
+        return context;
+    }
+
     public CredentialsProvider getCredientials() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
-            new AuthScope(settingsProvider.getHostname(), AuthScope.ANY_PORT),
-            new UsernamePasswordCredentials(settingsProvider.getUsername(), settingsProvider.getPassword()));
+                new AuthScope(settingsProvider.getHostname(), AuthScope.ANY_PORT),
+                new UsernamePasswordCredentials(settingsProvider.getUsername(), settingsProvider.getPassword()));
         return credentialsProvider;
     }
 
