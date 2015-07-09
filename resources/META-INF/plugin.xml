@@ -2,10 +2,10 @@
   <id>com.demandware.studio</id>
   <name>Demandware Studio Plugin</name>
   <version>1.0-SNAPSHOT</version>
-  <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
+  <vendor email="nek4life@gmail.com">Charlie Choiniere</vendor>
 
   <description><![CDATA[
-      Demandware development tools.
+      Demandware development tools. JDK8+ Required.
     ]]></description>
 
   <change-notes><![CDATA[
