@@ -51,9 +51,8 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         DWServerConnection serverConnection = ModuleServiceManager.getService(module, DWServerConnection.class);
         this.project = project;
         this.localFilePath = localFilePath;
-        this.context = new HttpClientContext();
-        this.context.setCredentialsProvider(serverConnection.getCredientials());
         this.httpClient = serverConnection.getClient();
+        this.context = serverConnection.getContext();
         this.remoteDirPaths = serverConnection.getRemoteDirPaths(sourceRootPath, localFilePath);
         this.remoteFilePath = serverConnection.getRemoteFilePath(sourceRootPath, localFilePath);
     }
