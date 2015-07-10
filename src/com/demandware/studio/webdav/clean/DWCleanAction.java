@@ -22,7 +22,7 @@ public class DWCleanAction extends AnAction {
                 if (ModuleType.get(module) instanceof DWModuleType) {
                     ModuleServiceManager.getService(module, DWServerConnection.class);
                     ProgressManager.getInstance().run(
-                            new DWCleanTask(project, module, "Cleaning Cartridges", true, PerformInBackgroundOption.ALWAYS_BACKGROUND)
+                            new DWCleanTask(project, module, "Cleaning cartridges...", true, PerformInBackgroundOption.ALWAYS_BACKGROUND)
                     );
 
                 }
