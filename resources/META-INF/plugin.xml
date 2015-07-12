@@ -26,7 +26,7 @@
     <moduleType id="DW_MODULE" implementationClass="com.demandware.studio.projectWizard.DWModuleType"/>
     <moduleService serviceImplementation="com.demandware.studio.settings.DWSettingsProvider"/>
     <moduleService serviceImplementation="com.demandware.studio.webdav.DWServerConnection"/>
-    <toolWindow id="Demandware" icon="/icons/demandware-13x13.png" anchor="bottom" factoryClass="com.demandware.studio.toolWindow.DWToolWindowFactory"/>
+    <toolWindow id="Demandware" icon="/icons/demandwareAction.png" anchor="bottom" factoryClass="com.demandware.studio.toolWindow.DWToolWindowFactory"/>
     <facetType implementation="com.demandware.studio.facet.DWFacetType"/>
     <frameworkSupport implementation="com.demandware.studio.facet.DWFrameworkSupportProvider"/>
     <!-- ISML Extensions-->
@@ -34,6 +34,8 @@
     <xml.tagNameProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <xml.elementDescriptorProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
+    <!-- DS Extensions-->
+    <fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>
   </extensions>
 
   <application-components>
@@ -49,9 +51,17 @@
 
   <actions>
 
-    <action id="com.studio.demandware.webdav.clean.DWCleanAction" class="com.demandware.studio.webdav.clean.DWCleanAction"
-            text="Clean Cartridges" description="Clean Cartridges" icon="/icons/demandware-13x13.png">
+    <action id="com.demandware.studio.webdav.clean.DWCleanAction" class="com.demandware.studio.webdav.clean.DWCleanAction"
+            text="Clean Cartridges" description="Clean Cartridges" icon="/icons/demandwareAction.png">
       <add-to-group group-id="BuildMenu" anchor="last"/>
+    </action>
+
+    <action class="com.demandware.studio.templates.DWCreateISMLFileAction" id="DWCreateISMLFile">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
+    </action>
+
+    <action class="com.demandware.studio.templates.DWCreateDSFileAction" id="DWCreateDSFile">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
     </action>
   </actions>
 

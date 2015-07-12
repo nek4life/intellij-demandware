@@ -1,12 +1,12 @@
-package com.demandware.studio.isml;
+package com.demandware.studio.ds;
 
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class ISMLLanguageTypeFactory extends FileTypeFactory {
+public class DSLanguageTypeFactory extends FileTypeFactory {
     @Override
     public void createFileTypes(@NotNull FileTypeConsumer consumer) {
-        consumer.consume(ISMLFileType.INSTANCE, "isml");
+        consumer.consume(DSFileType.INSTANCE, "ds");
     }
 }
