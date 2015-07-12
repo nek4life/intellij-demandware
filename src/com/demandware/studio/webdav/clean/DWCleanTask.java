@@ -66,6 +66,7 @@ public class DWCleanTask extends Task.Backgroundable {
         File zipFile = Paths.get(tempDir.toString(), version + ".zip").toFile();
         FileUtil.createDirectory(versionDir);
 
+        indicator.setText("Preparing Archive");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
@@ -102,24 +103,28 @@ public class DWCleanTask extends Task.Backgroundable {
 
         HttpUriRequest deleteZipRequest = RequestBuilder.delete().setUri(serverConnection.getBaseServerPath() + ".zip").build();
 
+        indicator.setText("Uploading archive...");
         try (CloseableHttpResponse response = client.execute(uploadRequest, context)) {
             indicator.setFraction(.332);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        indicator.setText("Removing previous version...");
         try (CloseableHttpResponse response = client.execute(deleteVersionRequest, context)){
             indicator.setFraction(.498);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        indicator.setText("Unzipping archive...");
         try (CloseableHttpResponse response = client.execute(unzipRequest, context)) {
             indicator.setFraction(.664);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        indicator.setText("Removing temporary files...");
         try (CloseableHttpResponse response = client.execute(deleteZipRequest, context)) {
             indicator.setFraction(.83);
         } catch (IOException e) {
