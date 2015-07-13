@@ -1,5 +1,5 @@
 <idea-plugin>
-    <extensions>
+    <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>
     </extensions>
 </idea-plugin>
