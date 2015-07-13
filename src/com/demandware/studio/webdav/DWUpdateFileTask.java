@@ -63,7 +63,7 @@ public class DWUpdateFileTask extends Task.Backgroundable {
         ConsoleView consoleView = ServiceManager.getService(project, DWConsoleService.class).getConsoleView();
         indicator.setFraction(.33);
 
-        HttpUriRequest getRequest = RequestBuilder.create("GET").setUri(remoteFilePath).build();
+        HttpUriRequest getRequest = RequestBuilder.create("HEAD").setUri(remoteFilePath).build();
         try (CloseableHttpResponse response = httpClient.execute(getRequest, context)) {
             if (response.getStatusLine().getStatusCode() == 200) {
                 isNewRemoteFile = false;
