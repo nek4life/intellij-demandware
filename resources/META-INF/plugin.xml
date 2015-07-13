@@ -35,6 +35,7 @@
     <xml.elementDescriptorProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
     <!-- DS Extensions-->
+    <iconProvider implementation="com.demandware.studio.ds.DSIconProvider" />
     <!--<fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>-->
   </extensions>
 
