@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions>
+        <fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>
+    </extensions>
+</idea-plugin>

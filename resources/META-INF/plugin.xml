@@ -19,6 +19,7 @@
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <depends>com.intellij.modules.lang</depends>
+  <depends config-file="javascript-plugin.xml" optional="true">JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Module Extensions -->
@@ -34,9 +35,9 @@
     <xml.tagNameProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <xml.elementDescriptorProvider implementation="com.demandware.studio.isml.codeInsight.tags.ISMLTagDescriptorsProvider"/>
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
+    <iconProvider implementation="com.demandware.studio.isml.ISMLIconProvider"/>
     <!-- DS Extensions-->
     <iconProvider implementation="com.demandware.studio.ds.DSIconProvider" />
-    <fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>
   </extensions>
 
   <application-components>
