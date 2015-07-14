@@ -4,6 +4,7 @@ import com.demandware.studio.AllIcons;
 import com.intellij.ide.IconProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -11,10 +12,10 @@ import javax.swing.*;
 public class DSIconProvider extends IconProvider {
     @Nullable
     @Override
-    public Icon getIcon(PsiElement element, int flags) {
+    public Icon getIcon(@NotNull PsiElement element, int flags) {
         PsiFile containingFile = element.getContainingFile();
         if (containingFile != null) {
-            if (containingFile.getName() != null && containingFile.getName().contains(".ds")) {
+            if (containingFile.getName().contains(".ds")) {
                 return AllIcons.DW_DS_ICON;
             }
         }
