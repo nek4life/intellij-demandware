@@ -36,13 +36,15 @@
     <defaultLiveTemplatesProvider implementation="com.demandware.studio.isml.ISMLTemplatesProvider"/>
     <!-- DS Extensions-->
     <iconProvider implementation="com.demandware.studio.ds.DSIconProvider" />
-    <!--<fileTypeFactory implementation="com.demandware.studio.ds.DSLanguageTypeFactory"/>-->
   </extensions>
 
   <application-components>
     <!-- Add your application components here -->
     <component>
       <implementation-class>com.demandware.studio.webdav.DWBulkFileListener</implementation-class>
+    </component>
+    <component>
+      <implementation-class>com.demandware.studio.ds.DSFileTypeAssociator</implementation-class>
     </component>
   </application-components>
 
