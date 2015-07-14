@@ -1,6 +1,6 @@
 package com.demandware.studio.isml;
 
-import com.demandware.studio.AllIcons;
+import com.demandware.studio.DWIcons;
 import com.intellij.ide.highlighter.XmlLikeFileType;
 import com.intellij.lang.Language;
 import com.intellij.lang.html.HTMLLanguage;
@@ -50,7 +50,7 @@ public class ISMLFileType extends XmlLikeFileType {
 
     @Override
     public Icon getIcon() {
-        return AllIcons.DW_ISML_ICON;
+        return DWIcons.DW_ISML_ICON;
     }
 
     @Override
