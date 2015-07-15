@@ -55,11 +55,13 @@
   <actions>
     <group id="DWActionGroup" text="Demandware" popup="true">
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last" />
+      <add-to-group group-id="EditorPopupMenu" anchor="last"/>
     </group>
 
     <action id="com.demandware.studio.webdav.clean.DWCleanAction" class="com.demandware.studio.webdav.clean.DWCleanAction"
             text="Clean Cartridges" description="Clean Cartridges" icon="/icons/demandwareAction.png">
       <add-to-group group-id="BuildMenu" anchor="last"/>
+
       <add-to-group group-id="DWActionGroup" />
     </action>
 
