@@ -15,7 +15,7 @@ public class DSIconProvider extends IconProvider {
     public Icon getIcon(@NotNull PsiElement element, int flags) {
         PsiFile containingFile = element.getContainingFile();
         if (containingFile != null) {
-            if (containingFile.getName().contains(".ds")) {
+            if (containingFile.getName() != null && containingFile.getName().endsWith(".ds")) {
                 return DWIcons.DW_DS_ICON;
             }
         }
