@@ -53,10 +53,14 @@
   </project-components>
 
   <actions>
+    <group id="DWActionGroup" text="Demandware" popup="true">
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last" />
+    </group>
 
     <action id="com.demandware.studio.webdav.clean.DWCleanAction" class="com.demandware.studio.webdav.clean.DWCleanAction"
             text="Clean Cartridges" description="Clean Cartridges" icon="/icons/demandwareAction.png">
       <add-to-group group-id="BuildMenu" anchor="last"/>
+      <add-to-group group-id="DWActionGroup" />
     </action>
 
     <action class="com.demandware.studio.templates.DWCreateISMLFileAction" id="DWCreateISMLFile">
@@ -67,5 +71,7 @@
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFromTemplate"/>
     </action>
   </actions>
+
+
 
 </idea-plugin>
