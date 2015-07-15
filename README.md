@@ -7,6 +7,8 @@
  * File upload console logging to verify file was modified or created successfully.
  * Auto completion for ISML tags, attributes, and known valid attribute values.
  * Live template shortcuts for ISML tags.
+ * New DS and ISML file actions
+ * Remote cartridge cleaning
 
 ### Requirements
 This plugin requires Java JDK8 to work correctly. This means that you will need to download
