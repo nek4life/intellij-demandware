@@ -35,7 +35,6 @@ public class DWFrameworkSupportConfigurable extends FrameworkSupportConfigurable
         final FacetManager facetManager = FacetManager.getInstance(module);
         ModifiableFacetModel facetModel = facetManager.createModifiableModel();
         DWSettingsProvider dwSettingsProvider = ModuleServiceManager.getService(module, DWSettingsProvider.class);
-        dwSettingsProvider.setPasswordKey(UUID.randomUUID().toString());
         dwSettingsProvider.setHostname(dwFrameworkSupportConfigurablePanel.getHostname());
         dwSettingsProvider.setUsername(dwFrameworkSupportConfigurablePanel.getUsername());
         dwSettingsProvider.setPassword(dwFrameworkSupportConfigurablePanel.getPassword());
