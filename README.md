@@ -1,3 +1,11 @@
+# [DEPRECATED]
+
+This plugin has been deprecated and replaced and there will be no future updates.
+
+A newer plugin with updated features can be found here.
+
+https://github.com/nek4life/sfcc-studio
+
 # Intellij Demandware Plugin
 ## Develop Demandware with Pleasure!
 
